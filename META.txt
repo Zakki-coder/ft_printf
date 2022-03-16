@@ -1,0 +1,78 @@
+Each conversion specification is introduced by % char and ends with conversion specifier. In between there may be (in order) 0 to N flags, min field width, precision and length modifier.
+
+Syntax:
+	%[$][flags][width][.precision][length modifier]conversion
+
+	After arguments have been promoted (note: WHAT ARE THE RULES FOR PROMOTION?) they must correspond with the conversion specifier. By default arguments are used in given order. 
+
+	Format string can contain either numbered argument specifications(%n$ and *m$) or unnumbered argument specifications (% and *) not both. Only exception being %% mixed with %n$ form. When using numbered argument specs, specifying the nth argument requires that all the leading arguments are specified in the format string.	
+
+flags:
+	# = Convert value to an alternative form. 
+		o (octal) = prefix output with 0, if not already.
+		x, X = a nonzero result outputs with 0x or 0X prepend.
+		f = for f the result will always contain a decimal point, even if it doesn't have trailing digits.
+		For others it is undefined.
+	0 = Padding with zeroes(All except c and s) by default value is padded with 0 instead of blanks on the left. IF 0 and - flags both appear, the 0 is ignored. IF precision is given with diouxX the 0 flag gets ignoredFOR other conversions the behaviour is undefined
+	- = Converted value is to be left adjusted instead the default of right justification. Converted value is padded on the right with blanks only.
+	' ' = A space should be left before a positive number. OR empty string. Produced by a signed conversion.
+	+	= A + or - sign is placed before a number produced by signed conversin, default is only for negative numbers. + overrides ' '.
+Edge cases for flags:
+	IF 0 and - flags both appear, the 0 is ignored. IF precision is given with diouxX the 0 flag gets ignoredFOR other conversions the behaviour is undefined(What happens with f?)
+	' ' flag only with signed conversion
+	+	flag overrides ' ', also only for signed conversions.
+	
+Width or min width:
+	Nonzero firs digit string, specifying min field width which will be padded by blanks on the left or rightif left adjustment flag has been given. A negative filed width is taken as a - flag followed by positive field width. If the result of conversion is larger, then the field is expanded accordingly
+	edges for width:
+	First digit nonzero
+	Must check adjustment
+	Negative width????
+
+Precision:
+	Precision is given with period ('.') followed by decimal digit string. If precision is given with just . 
+it is taken to be 0. Negative precision is taken as if precision were omitted.
+	Gives minimum number of digit to appear with diouxX
+	Number of digit to appear after radix for f conversion
+	maximum number of character to be printed for s conversion
+
+conversions without modifiers:
+	c = int argument is converted to unsigned char
+	s = const char * argument is expected to be a pointer to array of char, if precision is specified no null byte needs to be present.
+	p = the void * argument is printed in hexa (as if by %#x or %#lx)
+
+Conversions with modifiers:
+	d, i = int argument is converted to signed decimal notation,
+	o = unsigned int argument is converted to to unsigned octal
+	u = unsigned int argument is converted to unsigned decimal
+	x, X = unsigned int argument is converted to unsigned hexa, abcdef are used for x and ABCDEF are used for X conversions. 
+	If any above value value requires fewer digits than precision, digit is padded with 0 on the left
+	modifiers:
+	hh = A following integer conversion corresponds to a signed or unsigned char argument.
+	h = A following int conversion corresponds to short or unsgined short argumnet.
+	l = A following integer conversion corresponds to a long or unsigned long argument. 
+	ll = A following int conversion corresponds to a long long
+
+Conversion of float:	
+	f = The double arguments is rounded and converted to decimal in the style [-]ddd.ddd, where the number of digits after decimal point is set to equal to the precision spec. If precision is not given, default precision is 6, if precision is explicitly 0, no decimal point char appears. If there is a decimal point, there must be number before it.
+	modifiers:
+	l = Same as above
+	L = A following f conversion corresponds to a long double argument
+
+Manage %%:
+	Escaped output, prints just %. 
+ERRORS:
+	It seems that the original printf(at least on my linux) doesn't convert int arguments to float.
+	?It is an error if insufficiently many arguments are given. (What context)?
+	If syntax %m$ is used and m > argumentN, result is undefined
+	Mixing numbered (%n$, *m$) and unnumbered (% and *) is undefined.
+
+From C99 standard regarding UB:
+3.4.3
+1 undefined behavior
+behavior, upon use of a nonportable or erroneous program construct or of erroneous data,
+for which this International Standard imposes no requirements
+2 NOTE Possible undefined behavior ranges from ignoring the situation completely with unpredictable
+results, to behaving during translation or program execution in a documented manner characteristic of the
+environment (with or without the issuance of a diagnostic message), to terminating a translation or
+execution (with the issuance of a diagnostic message).
