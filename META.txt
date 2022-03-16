@@ -67,6 +67,9 @@ ERRORS:
 	If syntax %m$ is used and m > argumentN, result is undefined
 	Mixing numbered (%n$, *m$) and unnumbered (% and *) is undefined.
 
+Links:
+	http://www.cplusplus.com/reference/cstdio/printf/
+
 From C99 standard regarding UB:
 3.4.3
 1 undefined behavior
