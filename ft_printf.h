@@ -6,7 +6,7 @@
 /*   By: jniemine <jniemine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 15:15:00 by jniemine          #+#    #+#             */
-/*   Updated: 2022/03/22 14:47:58 by jniemine         ###   ########.fr       */
+/*   Updated: 2022/03/22 19:36:30 by jniemine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@
 # define ZERO	16
 # define PLUS	4	
 # define SPACE	1
+# define LDBL	256
+# define LLONG 	64
+# define LONG	16
+# define SHORT	4
+# define CHAR	1	
 
 typedef struct	s_format_string
 {
@@ -32,10 +37,13 @@ typedef struct	s_format_string
 	int		flags;
 	int		width;
 	int		precision;
-	int		modifiers;
+	int		modifier;
 	int		conversion;
 }				t_fs;
 
+void get_modifiers(t_fs *f_str);	//FOR DEBUG
+void get_precision(t_fs *f_str); //FOR DEBUG
+void get_width(t_fs *f_str);	//FOR DEBUG
 void get_flags(t_fs *f_str); //FOR DEBUG
 int is_conversion(char c);	//FOR DEBUG
 int	ft_printf(char *str, ...);
