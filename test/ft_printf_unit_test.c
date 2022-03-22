@@ -1,5 +1,8 @@
 #include "get_next_line.h"
+#include "ft_printf.h"
+#include <stdlib.h>
 #include <fcntl.h>
+#include <float.h>
 #include <limits.h>
 #include <string.h>
 #include "unity.h"
@@ -542,9 +545,294 @@ void test_length_mod_h(void)
 	return ;
 }
 
+void test_length_mod_l(void)
+{	
+	char *test_name = "test_length_mod_l";
+	int buf_size = 700;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[6];
+	int i = 0, x;
+	long	int lx;
+	unsigned long int ulx;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	inputs[i++] = "Argument is +-42: |%ld|, |%ld|, |%li|, |%lo|, |%lu|, |%lx|, |%lX|\n";
+	inputs[i++] = "Argument is 0: |%ld|, |%ld|, |%li|, |%lo|, |%lu|, |%lx|, |%lX|\n";
+	inputs[i++] = "Argument is LONG_MAX: |%ld|, |%ld|, |%li|, |%lo|, |%lu|, |%lx|, |%lX|\n";
+	inputs[i++] = "Argument is LONG_MIN: |%ld|, |%ld|, |%li|, |%lo|, |%lu|, |%lx|, |%lX|\n";
+	inputs[i++] = "Argument is ULONG_MAX: |%ld|, |%ld|, |%li|, |%lo|, |%lu|, |%lx|, |%lX|\n";
+	i = 0;
+	printf(inputs[i++], 42, -42, 42, 42, 42, 42, 42); 
+	x = 0;
+	printf(inputs[i++], x, x, x, x, x, x, x); 
+	lx = LONG_MAX;
+	printf(inputs[i++], lx, lx, lx, lx, lx, lx, lx); 
+	lx = LONG_MIN;
+	printf(inputs[i++], lx, lx, lx, lx, lx, lx, lx); 
+	ulx = ULONG_MAX;
+	printf(inputs[i++], ulx, ulx, ulx, ulx, ulx, ulx, ulx); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+	i = 0;
+
+	printf(inputs[i++], 42, -42, 42, 42, 42, 42, 42); 
+	x = 0;
+	printf(inputs[i++], x, x, x, x, x, x, x); 
+	lx = LONG_MAX;
+	printf(inputs[i++], lx, lx, lx, lx, lx, lx, lx); 
+	lx = LONG_MIN;
+	printf(inputs[i++], lx, lx, lx, lx, lx, lx, lx); 
+	ulx = ULONG_MAX;
+	printf(inputs[i++], ulx, ulx, ulx, ulx, ulx, ulx, ulx); 
+	
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+
+void test_length_mod_ll(void)
+{	
+	char *test_name = "test_length_mod_ll";
+	int buf_size = 1000;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[10];
+	int i = 0, x;
+	long	int lx;
+	unsigned long int ulx;
+	long long int	llx;
+	unsigned long long int ullx;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	inputs[i++] = "Argument is +-42: |%ld|, |%ld|, |%li|, |%lo|, |%lu|, |%lx|, |%lX|\n";
+	inputs[i++] = "Argument is 0: |%ld|, |%ld|, |%li|, |%lo|, |%lu|, |%lx|, |%lX|\n";
+	inputs[i++] = "Argument is LONG_MAX: |%ld|, |%ld|, |%li|, |%lo|, |%lu|, |%lx|, |%lX|\n";
+	inputs[i++] = "Argument is LONG_MIN: |%ld|, |%ld|, |%li|, |%lo|, |%lu|, |%lx|, |%lX|\n";
+	inputs[i++] = "Argument is ULONG_MAX: |%ld|, |%ld|, |%li|, |%lo|, |%lu|, |%lx|, |%lX|\n";
+	inputs[i++] = "Argument is LLONG_MAX: |%lld|, |%lld|, |%lldi|, |%lldo|, |%lldu|, |%lldx|, |%lldX|\n";
+	inputs[i++] = "Argument is ULLONG_MAX: |%llu|, |%llu|, |%llui|, |%lluo|, |%lluu|, |%llux|, |%lluX|\n";
+	i = 0;
+	printf(inputs[i++], 42, -42, 42, 42, 42, 42, 42); 
+	x = 0;
+	printf(inputs[i++], x, x, x, x, x, x, x); 
+	lx = LONG_MAX;
+	printf(inputs[i++], lx, lx, lx, lx, lx, lx, lx); 
+	lx = LONG_MIN;
+	printf(inputs[i++], lx, lx, lx, lx, lx, lx, lx); 
+	ulx = ULONG_MAX;
+	printf(inputs[i++], ulx, ulx, ulx, ulx, ulx, ulx, ulx); 
+	llx = LLONG_MAX;
+	printf(inputs[i++], llx, llx, llx, llx, llx, llx, llx); 
+	ullx = ULLONG_MAX;
+	printf(inputs[i++], ullx, ullx, ullx, ullx, ullx, ullx, ullx); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+
+	i = 0;
+	printf(inputs[i++], 42, -42, 42, 42, 42, 42, 42); 
+	x = 0;
+	printf(inputs[i++], x, x, x, x, x, x, x); 
+	lx = LONG_MAX;
+	printf(inputs[i++], lx, lx, lx, lx, lx, lx, lx); 
+	lx = LONG_MIN;
+	printf(inputs[i++], lx, lx, lx, lx, lx, lx, lx); 
+	ulx = ULONG_MAX;
+	printf(inputs[i++], ulx, ulx, ulx, ulx, ulx, ulx, ulx); 
+	llx = LLONG_MAX;
+	printf(inputs[i++], llx, llx, llx, llx, llx, llx, llx); 
+	ullx = ULLONG_MAX;
+	printf(inputs[i++], ullx, ullx, ullx, ullx, ullx, ullx, ullx); 
+
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+
+void test_length_mod_l_and_L_with_float(void)
+{	
+	char *test_name = "test_length_mod_l_and_L_with_float)";
+	int buf_size = 10000;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[10];
+	int i = 0, x;
+	float f;
+	double df;
+	long double ldf;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	inputs[i++] = "Argument is +-42: |%lf|, |%Lf|, |%lf|, |%Lf|\n";
+	inputs[i++] = "Argument is 0: |%lf|, |%Lf|, |%lf|, |%Lf|\n";
+	inputs[i++] = "Argument is DBL_MAX: |%lf|, |%Lf|\n";
+	inputs[i++] = "Argument is DBL_MIN: |%lf|, |%Lf|\n";
+	inputs[i++] = "Argument is LDBL_MAX: |%lf|, |%Lf|\n";
+	inputs[i++] = "Argument is LDBL_MIN: |%lf|, |%Lf|\n";
+	i = 0;
+	printf(inputs[i++], 42.0, 42.0, -42.0, -42.0); 
+	f = 0;
+	printf(inputs[i++], f, f, f, f); 
+	df = DBL_MAX;
+	printf(inputs[i++], df, df); 
+	df = DBL_MIN;
+	printf(inputs[i++], df, df); 
+	ldf = LDBL_MAX;
+	printf(inputs[i++], ldf, ldf); 
+	ldf = LDBL_MIN;
+	printf(inputs[i++], ldf, ldf); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+
+	i = 0;
+	printf(inputs[i++], 42.0, 42.0, -42.0, -42.0); 
+	f = 0;
+	printf(inputs[i++], f, f, f, f); 
+	df = DBL_MAX;
+	printf(inputs[i++], df, df); 
+	df = DBL_MIN;
+	printf(inputs[i++], df, df); 
+	ldf = LDBL_MAX;
+	printf(inputs[i++], ldf, ldf); 
+	ldf = LDBL_MIN;
+	printf(inputs[i++], ldf, ldf); 
+	
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+
+void test_print_with_percent(int print_to_console)
+{	
+	char *test_name = "test_print_with_percent";
+	int buf_size = 500;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[10];
+	int i = 0;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	inputs[i++] = "What happens here %% or here %\n";
+	i = 0;
+	printf(inputs[i++]); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+	
+	i = 0;
+	ft_printf(inputs[i++]); 
+	
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if(print_to_console == 1)
+	{
+		printf(res);
+		printf(res2);
+	}
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+void usage(int argc, char *args)
+{
+	if(argc > 1 && *args != '1')
+	{
+		printf("Usage: without argument dumbs are written to results folder\nWith argument 1, printed to console");
+		exit(-1);
+	}
+}
 // not needed when using generate_test_runner.rb
-int main(void) {
+int main(int argc, char *args) {
 //    UNITY_BEGIN();
+	usage(argc, args);
 //    RUN_TEST(test_double_percent_sign);
 //	test_hash_flag();
 //	test_zero_flag();
@@ -555,6 +843,10 @@ int main(void) {
 //	test_precision();
 //	test_length_mod_hh();
 //	test_length_mod_h();
+//	test_length_mod_l();
+//	test_length_mod_ll();
+//	test_length_mod_l_and_L_with_float();
+	test_print_with_percent(1);
 	return (0);
 //    return UNITY_END();
 }
