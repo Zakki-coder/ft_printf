@@ -2,6 +2,7 @@
 #include "../libft/libft.h"
 #include <stdio.h>
 #include <limits.h>
+#include <float.h>
 
 void print_bit(int n)
 {
@@ -104,12 +105,72 @@ void test_get_modifiers()
 	print_bit(f_str.modifier);	 
 }
 
+void how_convers()
+{
+	long double ld = 0;
+	int 		d = INT_MAX;
+
+	printf("Ld: %d\n", ld);
+}
+
+void test_d_i()
+{
+	ft_printf("helllo %d\n", INT_MAX);
+	ft_printf("helllo %d\n", 0);
+	ft_printf("helllo %d\n", INT_MIN);
+	ft_printf("helllo %+d\n", INT_MAX);
+	ft_printf("helllo %+d\n", 0);
+	ft_printf("helllo %+d\n", INT_MIN);
+	ft_printf("helllo %-d\n", INT_MAX);
+	ft_printf("helllo %-d\n", 0);
+	ft_printf("helllo %-d\n", INT_MIN);
+	ft_printf("helllo %#d\n", INT_MAX);
+	ft_printf("helllo %#d\n", 0);
+	ft_printf("helllo %#d\n", INT_MIN);
+	ft_printf("helllo %0d\n", INT_MAX);
+	ft_printf("helllo %0d\n", 0);
+	ft_printf("helllo %0d\n", INT_MIN);
+	ft_printf("helllo % d\n", INT_MAX);
+	ft_printf("helllo % d\n", 0);
+	ft_printf("helllo % d\n", INT_MIN);
+	ft_printf("helllo |% 4d|\n", 3);
+	ft_printf("helllo |%4 d|\n", 0);
+	ft_printf("helllo |% 4d|\n", 3);
+	ft_printf("helllo |% .4d|\n", 3);
+	ft_printf("helllo |%.4 d|\n", 0);
+	ft_printf("helllo |% .4d|\n", 3);
+	ft_printf("helllo |%0.4d|\n", 3);
+	ft_printf("helllo |%.40d|\n", 0);
+	ft_printf("helllo |%0.4d|\n", 3);
+	ft_printf("helllo |%0.4d|\n", 3);
+	ft_printf("helllo |%.40d|\n", 0);
+	ft_printf("helllo |%0.4d|\n", 3);
+	ft_printf("helllo |%0-4d|\n", 3);
+	ft_printf("helllo |%40-d|\n", 0);
+	ft_printf("helllo |%-04d|\n", 3);
+	ft_printf("helllo |%0-+4d|\n", 3);
+	ft_printf("helllo |%4-+d|\n", 0);
+	ft_printf("helllo |%+-04d|\n", 3);
+	ft_printf("helllo |%0- 4d|\n", 3);
+	ft_printf("helllo |%4- d|\n", 0);
+	ft_printf("helllo |% -04d|\n", 3);
+	ft_printf("helllo |%0- 4d|\n", 3456789);
+	ft_printf("helllo |% -04d|\n", -3456789);
+	ft_printf("helllo |%0- +4d|\n", 3);
+	ft_printf("helllo |% -0+4d|\n", 3);
+	ft_printf("helllo |%0 +4d|\n", 3);
+	ft_printf("helllo |%0 +4d|\n", 0);
+	printf("helllo |%0 +4d|\n", 3);
+	printf("helllo |%0 4d|\n", -3);
+}
 int main(void)
 {
 //	test_get_flags();
 //	test_is_conversion();
 //	test_get_width();
 //	test_get_precision();
-	test_get_modifiers();	
+//	test_get_modifiers();	
+//	how_convers();
+	test_d_i();
 	return (0);
 }

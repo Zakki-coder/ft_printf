@@ -786,9 +786,9 @@ void test_print_with_percent(int print_to_console)
 		exit(-1);
 	stdout_bk = dup(fileno(stdout));
 	dup2(p[1], fileno(stdout)); 
-	inputs[i++] = "What happens here %% or here %\n";
+	inputs[i++] = "What happens here %%d or here %d\n";
 	i = 0;
-	printf(inputs[i++]); 
+	printf(inputs[i++], 42, 42); 
 	fflush(stdout);
 	fflush(stdout);
 	close(p[1]);
@@ -797,7 +797,9 @@ void test_print_with_percent(int print_to_console)
 	dup2(p2[1], fileno(stdout)); 
 	
 	i = 0;
-	ft_printf(inputs[i++]); 
+	inputs[i++] = "What happens here %%d or here %d\n";
+	i = 0;
+	printf(inputs[i++], 42, 42); 
 	
 	fflush(stdout);
 	close(p2[1]);
@@ -829,10 +831,127 @@ void usage(int argc, char *args)
 		exit(-1);
 	}
 }
+
+void test_some_edges()
+{	
+	char *test_name = "test_some_edges";
+	int buf_size = 500;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[10];
+	int i = 0;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	inputs[i++] = "Short or char?: %hhhd";
+	i = 0;
+	printf(inputs[i++], INT_MAX); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+	
+	i = 0;
+	printf(inputs[i++]); 
+	
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+
+void test_d_and_i(void)
+{	
+	char *test_name = "test_d_and_i";
+	int buf_size = 700;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[6];
+	int i = 0, x;
+	long	int lx;
+	unsigned long int ulx;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	inputs[i++] = "Argument is +-42: |%ld|, |%ld|, |%li|\n";
+	inputs[i++] = "Argument is 0: |%ld|, |%ld|, |%li|\n";
+	inputs[i++] = "Argument is LONG_MAX: |%ld|, |%ld|, |%li|\n";
+	inputs[i++] = "Argument is LONG_MIN: |%ld|, |%ld|, |%li|\n";
+	inputs[i++] = "Argument is ULONG_MAX: |%ld|, |%ld|, |%li|\n";
+	i = 0;
+	printf(inputs[i++], 42, -42, 42); 
+	x = 0;
+	printf(inputs[i++], x, x, x); 
+	lx = LONG_MAX;
+	printf(inputs[i++], lx, lx, lx); 
+	lx = LONG_MIN;
+	printf(inputs[i++], lx, lx, lx); 
+	ulx = ULONG_MAX;
+	printf(inputs[i++], ulx, ulx, ulx); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+
+	i = 0;
+	ft_printf(inputs[i++], 42, -42, 42); 
+	x = 0;
+	ft_printf(inputs[i++], x, x, x); 
+	lx = LONG_MAX;
+	ft_printf(inputs[i++], lx, lx, lx); 
+	lx = LONG_MIN;
+	ft_printf(inputs[i++], lx, lx, lx); 
+	ulx = ULONG_MAX;
+	ft_printf(inputs[i++], ulx, ulx, ulx); 
+	
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+
 // not needed when using generate_test_runner.rb
 int main(int argc, char *args) {
 //    UNITY_BEGIN();
-	usage(argc, args);
+//	usage(argc, args);
 //    RUN_TEST(test_double_percent_sign);
 //	test_hash_flag();
 //	test_zero_flag();
@@ -846,7 +965,9 @@ int main(int argc, char *args) {
 //	test_length_mod_l();
 //	test_length_mod_ll();
 //	test_length_mod_l_and_L_with_float();
-	test_print_with_percent(1);
+//	test_print_with_percent(0);
+//	test_some_edges();
+	test_d_and_i();
 	return (0);
 //    return UNITY_END();
 }
