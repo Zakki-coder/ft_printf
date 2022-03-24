@@ -6,7 +6,7 @@
 /*   By: jniemine <jniemine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 15:15:00 by jniemine          #+#    #+#             */
-/*   Updated: 2022/03/22 19:36:30 by jniemine         ###   ########.fr       */
+/*   Updated: 2022/03/24 14:35:45 by jniemine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct	s_format_string
 	int		conversion;
 }				t_fs;
 
+char *absolute_itoa(long long ll); //FOR DEBUG
 void get_modifiers(t_fs *f_str);	//FOR DEBUG
 void get_precision(t_fs *f_str); //FOR DEBUG
 void get_width(t_fs *f_str);	//FOR DEBUG

@@ -4,23 +4,21 @@
 #include <limits.h>
 #include <float.h>
 
-void print_bit(int n)
+void print_bit(long long n)
 {
 	int largest = 0;
-	int i, temp;
-	i = -1;
-	temp = n;
-	while(temp)
+	int i; 
+	long long one = 1;
+
+	i = sizeof(long long) * 8;
+	while (i > 0)
 	{
-		temp /= 2;
-		++i;
-	}
-	while (i >= 0)
-	{
-		if (n & 1 << i)
+		if (n & (one << (i - 1)))
 			printf("1");
 		else
 			printf("0");
+		if (i != sizeof(long long) * 8 && (i - 1) % 8 == 0)
+			printf(" ");
 		--i;
 	}
 	printf("\n");
@@ -107,62 +105,150 @@ void test_get_modifiers()
 
 void how_convers()
 {
-	long double ld = 0;
-	int 		d = INT_MAX;
+	long long			ld;
+	unsigned int 		d;
+	int					i = 0; 
 
-	printf("Ld: %d\n", ld);
+	ld = LLONG_MIN;	
+	printf ("%lld\n", ld);
+	ld = ld * (-1);
+	printf ("%lld\n", ld);
+//	print_bit(INT_MAX);
+//	print_bit(UINT_MAX);
+//	while (i < 64)
+//	{
+//		printf ("%d", i % 8);
+//		if ((i + 1) % 8 == 0)
+//			printf(" ");
+//		++i;
+//	}
+//	printf("\n");
+//	print_bit(ld);
+//	print_bit(ULONG_MAX);
+//	d = ld;
+//	print_bit(d);
+//	ld = d;
+//	print_bit(ld);
+//	ld = INT_MIN;
+//	print_bit(ld);
 }
 
 void test_d_i()
 {
 	ft_printf("helllo %d\n", INT_MAX);
+	printf("helllo %d\n", INT_MAX);
 	ft_printf("helllo %d\n", 0);
+	printf("helllo %d\n", 0);
 	ft_printf("helllo %d\n", INT_MIN);
+	printf("helllo %d\n", INT_MIN);
 	ft_printf("helllo %+d\n", INT_MAX);
+	printf("helllo %+d\n", INT_MAX);
 	ft_printf("helllo %+d\n", 0);
+  printf("helllo %+d\n", 0);
 	ft_printf("helllo %+d\n", INT_MIN);
+	printf("helllo %+d\n", INT_MIN);
 	ft_printf("helllo %-d\n", INT_MAX);
+	printf("helllo %-d\n", INT_MAX);
 	ft_printf("helllo %-d\n", 0);
+	printf("helllo %-d\n", 0);
 	ft_printf("helllo %-d\n", INT_MIN);
+	printf("helllo %-d\n", INT_MIN);
 	ft_printf("helllo %#d\n", INT_MAX);
+	printf("helllo %#d\n", INT_MAX);
 	ft_printf("helllo %#d\n", 0);
+	printf("helllo %#d\n", 0);
 	ft_printf("helllo %#d\n", INT_MIN);
-	ft_printf("helllo %0d\n", INT_MAX);
-	ft_printf("helllo %0d\n", 0);
+	printf("helllo %#d\n", INT_MIN);
+	ft_printf("helllo |%0d|\n", INT_MAX);
+	printf("helllo |%0d|\n", INT_MAX);
+	ft_printf("helllo |%0d|\n", 0);
+	printf("helllo |%0d|\n", 0);
 	ft_printf("helllo %0d\n", INT_MIN);
+	printf("helllo %0d\n", INT_MIN);
 	ft_printf("helllo % d\n", INT_MAX);
+	printf("helllo % d\n", INT_MAX);
 	ft_printf("helllo % d\n", 0);
+	printf("helllo % d\n", 0);
 	ft_printf("helllo % d\n", INT_MIN);
+	printf("helllo % d\n", INT_MIN);
 	ft_printf("helllo |% 4d|\n", 3);
+	printf("helllo |% 4d|\n", 3);
 	ft_printf("helllo |%4 d|\n", 0);
+	printf("helllo |%4 d|\n", 0);
 	ft_printf("helllo |% 4d|\n", 3);
+	printf("helllo |% 4d|\n", 3);
 	ft_printf("helllo |% .4d|\n", 3);
+	printf("helllo |% .4d|\n", 3);
 	ft_printf("helllo |%.4 d|\n", 0);
+	printf("helllo |%.4 d|\n", 0);
 	ft_printf("helllo |% .4d|\n", 3);
+	printf("helllo |% .4d|\n", 3);
 	ft_printf("helllo |%0.4d|\n", 3);
+	printf("helllo |%0.4d|\n", 3);
 	ft_printf("helllo |%.40d|\n", 0);
+	printf("helllo |%.40d|\n", 0);
 	ft_printf("helllo |%0.4d|\n", 3);
+	printf("helllo |%0.4d|\n", 3);
 	ft_printf("helllo |%0.4d|\n", 3);
+	printf("helllo |%0.4d|\n", 3);
 	ft_printf("helllo |%.40d|\n", 0);
+	printf("helllo |%.40d|\n", 0);
 	ft_printf("helllo |%0.4d|\n", 3);
+	printf("helllo |%0.4d|\n", 3);
 	ft_printf("helllo |%0-4d|\n", 3);
+	printf("helllo |%0-4d|\n", 3);
 	ft_printf("helllo |%40-d|\n", 0);
+	printf("helllo |%40-d|\n", 0);
+	ft_printf("helllo |%4+0d|\n", 5);
+	printf("helllo |%4+0d|\n", 5);
 	ft_printf("helllo |%-04d|\n", 3);
+	printf("helllo |%-04d|\n", 3);
 	ft_printf("helllo |%0-+4d|\n", 3);
+	printf("helllo |%0-+4d|\n", 3);
 	ft_printf("helllo |%4-+d|\n", 0);
+	printf("helllo |%4-+d|\n", 0);
 	ft_printf("helllo |%+-04d|\n", 3);
+	printf("helllo |%+-04d|\n", 3);
 	ft_printf("helllo |%0- 4d|\n", 3);
+	printf("helllo |%0- 4d|\n", 3);
 	ft_printf("helllo |%4- d|\n", 0);
+	printf("helllo |%4- d|\n", 0);
 	ft_printf("helllo |% -04d|\n", 3);
+	printf("helllo |% -04d|\n", 3);
 	ft_printf("helllo |%0- 4d|\n", 3456789);
+	printf("helllo |%0- 4d|\n", 3456789);
 	ft_printf("helllo |% -04d|\n", -3456789);
+	printf("helllo |% -04d|\n", -3456789);
 	ft_printf("helllo |%0- +4d|\n", 3);
+	printf("helllo |%0- +4d|\n", 3);
 	ft_printf("helllo |% -0+4d|\n", 3);
+	printf("helllo |% -0+4d|\n", 3);
 	ft_printf("helllo |%0 +4d|\n", 3);
-	ft_printf("helllo |%0 +4d|\n", 0);
 	printf("helllo |%0 +4d|\n", 3);
+	ft_printf("helllo |%0 +4d|\n", 0);
+	printf("helllo |%0 +4d|\n", 0);
+	ft_printf("helllo |%0 +4d|\n", 3);
+	printf("helllo |%0 +4d|\n", 3);
+	ft_printf("helllo |%0 4d|\n", -3);
 	printf("helllo |%0 4d|\n", -3);
+	ft_printf("helllo |%4li|, |%2li|\n", 3, 8);
+	printf("helllo |%4li|, |%2li|\n", 3, 8);
 }
+
+void test_abs_itoa()
+{
+	char *s;
+
+	s = absolute_itoa(LLONG_MIN);
+	printf("%s\n", s);
+	s = absolute_itoa(LLONG_MIN + 1);
+	printf("%s\n", s);
+	s = absolute_itoa(0);
+	printf("%s\n", s);
+	s = absolute_itoa(LLONG_MAX);
+	printf("%s\n", s);
+}
+
 int main(void)
 {
 //	test_get_flags();
@@ -171,6 +257,7 @@ int main(void)
 //	test_get_precision();
 //	test_get_modifiers();	
 //	how_convers();
-	test_d_i();
+	test_abs_itoa();
+//	test_d_i();
 	return (0);
 }

@@ -1,0 +1,4 @@
+test_d_and_i
+Input   : INT_MIN %d
+Expected: INT_MIN -2147483648
+Yours   : INT_MIN --2147483648

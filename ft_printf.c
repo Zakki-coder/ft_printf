@@ -6,7 +6,7 @@
 /*   By: jniemine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 17:51:33 by jniemine          #+#    #+#             */
-/*   Updated: 2022/03/23 22:27:36 by jniemine         ###   ########.fr       */
+/*   Updated: 2022/03/24 20:06:29 by jniemine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ char *handle_width(t_fs *f_str, long long ll, char *nb)
 		f_str->width = len;
 	if (f_str->precision > f_str->width)
 		f_str->width = f_str->precision; //Behaves differently with float
-	if (ll >= 0 && (f & PLUS || f & SPACE)) //Protect for int overflow if you want
+	if (len == f_str->width && (ll < 0 || f & PLUS || f & SPACE)) //Protect for int overflow if you want
 		++f_str->width;
 	ret = (char *)ft_memalloc(sizeof(*ret) * f_str->width);	
 	if (ret == NULL)
@@ -194,32 +194,72 @@ char *handle_width(t_fs *f_str, long long ll, char *nb)
 	return (ret);
 }
 
+int is_signed(char c)
+{
+	return (c == 'd' || c == 'i');
+}
+
+void set_prefix(t_fs *f_str, char *out, long long ll, int diff)
+{
+	int f;
+	char prefix;
+
+	f = f_str->flags;
+	if (!is_signed(*f_str->str))
+		return ;	
+	if (ll < 0)
+		prefix = '-';
+	else if (f & PLUS)
+		prefix = '+';
+	else if (f & SPACE)
+		prefix = ' ';
+	else
+		return ;
+	if (!(f & MINUS) && (f & ZERO))
+		*out = prefix;	
+	else
+		*(out + diff - 1) = prefix;
+}
+
+char *absolute_itoa(long long ll)
+{
+	long long	llong_min;
+	char		*nb;
+
+	llong_min = (long long)-9223372036854775807 - 1;
+	if (ll == llong_min)
+		return("9223372036854775808");
+	if(ll < 0)
+		ll *= -1;
+	nb = ft_itoa(ll);
+	return (nb);
+}
+	
 void print_di(t_fs *f_str, long long ll)
 {
-	char	*nb; //Remember to free
+	char	*nb; //Remember to free, this number is going to be abs
 	char	*out; //Remember to free
 	int		len;
 	int		diff;
 			
 //	TODO: make function for prefix offset (plus and space), negative sign should also be before zeroes, so maybe dont use itoa at all? Or use it only to get positive number and handle prefix seperatly
-	nb = ft_itoa(ll); //Remember to free
+	nb = absolute_itoa(ll); //Remember to free, Make a function to decide which type of number is parsed, d , o or x, malloc protection is in handle_width
 	out = handle_width(f_str, ll, nb); //Remember to free
 	diff = f_str->width - ft_strlen(nb);
 	ft_memset(out, ' ', f_str->width);
-	if (f_str->flags & MINUS && (f_str->flags & PLUS || f_str->flags & SPACE))
-		diff = 1;
+	if (f_str->flags & MINUS)
+		if (ll < 0 || f_str->flags & PLUS || f_str->flags & SPACE)
+			diff = 1;
+		else
+			diff = 0;
 	if (!(f_str->flags & MINUS) && (f_str->flags & ZERO))
 		ft_memset(out, '0', f_str->width);
-	if (!(f_str->flags & MINUS))
-		ft_memcpy(out + diff, nb, ft_strlen(nb));
-	else
-		ft_memcpy(out + diff, nb, ft_strlen(nb));
-	if (ll >= 0 && f_str->flags & PLUS)
-		*(out + diff - 1) = '+';
-	else if(ll >= 0 && f_str->flags & SPACE)
-		*(out + diff - 1) = ' ';
+	ft_memcpy(out + diff, nb, ft_strlen(nb));
+	set_prefix(f_str, out, ll, diff);
 	write(1, out, f_str->width);
 	++f_str->str;
+	free(nb);
+	free(out);
 }	
 
 void print_conversion(t_fs *f_str, long long ll)
@@ -231,6 +271,17 @@ void print_conversion(t_fs *f_str, long long ll)
 		print_di(f_str, (int)ll); //Does the casting work??
 }
 	
+/* Never format string or argcs */
+void format_fs(t_fs *f_str)
+{
+	f_str->return_n = 0;
+	f_str->flags = 0;
+	f_str->width = 0;
+	f_str->precision = -1;
+	f_str->modifier = 0;
+	f_str->conversion = 0;
+}
+
 void parse_conversion(t_fs *f_str)
 {
 	long double		ld;
@@ -247,6 +298,7 @@ void parse_conversion(t_fs *f_str)
 	else
 		;
 //	*f_str = (t_fs){.precision = -1}; //Does this work? Google why? New struct is created?
+	format_fs(f_str);
 }
 
 void parser(t_fs f_str)
@@ -280,8 +332,9 @@ void parser(t_fs f_str)
 int	ft_printf(char *str, ...)
 {
 	//TEST that implicit formatting works
-	t_fs	f_str = {.precision = -1};
+	t_fs	f_str;
 
+	format_fs(&f_str);
 	f_str.str = str;
 	va_start(f_str.argcs, str);
 	parser(f_str);
