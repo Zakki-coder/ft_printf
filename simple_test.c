@@ -139,12 +139,12 @@ void test_d_i()
 	printf("helllo %d\n", INT_MAX);
 	ft_printf("helllo %d\n", 0);
 	printf("helllo %d\n", 0);
-	ft_printf("helllo %d\n", INT_MIN);
-	printf("helllo %d\n", INT_MIN);
+  ft_printf("helllo %d\n", INT_MIN);
+  printf("helllo %d\n", INT_MIN);
 	ft_printf("helllo %+d\n", INT_MAX);
 	printf("helllo %+d\n", INT_MAX);
 	ft_printf("helllo %+d\n", 0);
-  printf("helllo %+d\n", 0);
+ 	printf("helllo %+d\n", 0);
 	ft_printf("helllo %+d\n", INT_MIN);
 	printf("helllo %+d\n", INT_MIN);
 	ft_printf("helllo %-d\n", INT_MAX);
@@ -229,8 +229,8 @@ void test_d_i()
 	printf("helllo |%0 +4d|\n", 0);
 	ft_printf("helllo |%0 +4d|\n", 3);
 	printf("helllo |%0 +4d|\n", 3);
-	ft_printf("helllo |%0 4d|\n", -3);
-	printf("helllo |%0 4d|\n", -3);
+  ft_printf("helllo |%0 4d|\n", -3);
+  printf("helllo |%0 4d|\n", -3);
 	ft_printf("helllo |%4li|, |%2li|\n", 3, 8);
 	printf("helllo |%4li|, |%2li|\n", 3, 8);
 }
@@ -238,15 +238,26 @@ void test_d_i()
 void test_abs_itoa()
 {
 	char *s;
+	int	n;
 
-	s = absolute_itoa(LLONG_MIN);
+	s = absolute_itoa(LLONG_MIN, &n);
 	printf("%s\n", s);
-	s = absolute_itoa(LLONG_MIN + 1);
+	s = absolute_itoa(LLONG_MIN + 1, &n);
 	printf("%s\n", s);
-	s = absolute_itoa(0);
+	s = absolute_itoa(0, &n);
 	printf("%s\n", s);
-	s = absolute_itoa(LLONG_MAX);
+	s = absolute_itoa(LLONG_MAX, &n);
 	printf("%s\n", s);
+}
+void test_x()
+{
+	printf("%#o\n", 10);
+}
+
+void wtf(void)
+{	
+	printf("%*.*d", 44, 12, 47);
+	return ;
 }
 
 int main(void)
@@ -257,7 +268,9 @@ int main(void)
 //	test_get_precision();
 //	test_get_modifiers();	
 //	how_convers();
-	test_abs_itoa();
+//	test_abs_itoa();
 //	test_d_i();
+//	test_x();
+	wtf();
 	return (0);
 }

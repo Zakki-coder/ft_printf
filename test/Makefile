@@ -1,15 +1,13 @@
 NAME =	ft_printf_unit_test
 
-INC =	-I./Unity/src/ 	\
-		-I./gnl/ 		\
-		-I./gnl/libft/includes 		\
+INC =	-I./gnl/ 		\
 		-I./../				\
+		-I./../libft/	\
 	
-SRC =	./Unity/src/unity.c		\
-		ft_printf_unit_test.c	\
+SRC =	ft_printf_unit_test.c	\
 		./../ft_printf.c		\
 		./gnl/get_next_line.c	\
-		./gnl/libft/*.c	\
+		./../libft/*.c
 
 all:
 	@rm -f ./results/*

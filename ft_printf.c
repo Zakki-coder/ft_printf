@@ -6,7 +6,7 @@
 /*   By: jniemine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 17:51:33 by jniemine          #+#    #+#             */
-/*   Updated: 2022/03/24 20:06:29 by jniemine         ###   ########.fr       */
+/*   Updated: 2022/03/25 13:49:24 by jniemine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 int print_chars(t_fs *f_str)
 {
-	char **str;
+	const char **str;
 	int n;
 
 	n = f_str->return_n;
@@ -42,7 +42,7 @@ int print_chars(t_fs *f_str)
 void get_flags(t_fs *f_str)
 {
 	int *flags;
-	char **s;
+	const char **s;
 
 	s = &f_str->str;
 	flags = &f_str->flags;
@@ -69,7 +69,7 @@ int is_conversion(char c)
 			|| c == 'o' || c == 'u' || c == 'x' || c == 'X');
 }
 
-int not_atoi(char **s)
+int not_atoi(const char **s)
 {
 	int n;
 
@@ -87,7 +87,7 @@ int not_atoi(char **s)
 void get_width(t_fs *f_str)
 {
 	int n;
-	char **s;
+	const char **s;
 	
 	s = &f_str->str;
 	n = 0;
@@ -103,7 +103,7 @@ void get_width(t_fs *f_str)
 void get_precision(t_fs *f_str)
 {
 	int n;
-	char **s;
+	const char **s;
 
 	n = 0;
 	s = &f_str->str;
@@ -130,7 +130,7 @@ int is_modifier(char c)
 
 void get_modifiers(t_fs *f_str)
 {
-	char **s;
+	const char **s;
 
 	s = &f_str->str;
 	//loop until largest modifier is found, or conversion char or null is found
@@ -172,16 +172,14 @@ long long get_argument(t_fs *f_str)
 }
 
 
-char *handle_width(t_fs *f_str, long long ll, char *nb)
+char *handle_width(t_fs *f_str, long long ll, char *nb, int len)
 {
-	int len;
 	int f;
 	char *ret;
 
 	f = f_str->flags;
 	if (nb == NULL)
 		exit(-1);
-	len = ft_strlen(nb);
 	if (len > f_str->width)
 		f_str->width = len;
 	if (f_str->precision > f_str->width)
@@ -215,18 +213,28 @@ void set_prefix(t_fs *f_str, char *out, long long ll, int diff)
 		prefix = ' ';
 	else
 		return ;
-	if (!(f & MINUS) && (f & ZERO))
+	if ((f & MINUS) || (f & ZERO))
 		*out = prefix;	
 	else
 		*(out + diff - 1) = prefix;
 }
 
-char *absolute_itoa(long long ll)
+char *absolute_itoa(long long ll, int *len)
 {
 	long long	llong_min;
+	long long	ll_the_second;
 	char		*nb;
 
-	llong_min = (long long)-9223372036854775807 - 1;
+	*len = 0;
+	ll_the_second = ll;
+	if(ll_the_second == 0)
+		++*len;
+	while(ll_the_second)
+	{
+		++*len;
+		ll_the_second /= 10;
+	}
+	llong_min = -9223372036854775807 - 1;
 	if (ll == llong_min)
 		return("9223372036854775808");
 	if(ll < 0)
@@ -235,6 +243,12 @@ char *absolute_itoa(long long ll)
 	return (nb);
 }
 	
+char *process_conversion(t_fs *f_str, long long ll)
+{
+			//call either absolute_itoa, otoa, or xtoa
+}
+
+
 void print_di(t_fs *f_str, long long ll)
 {
 	char	*nb; //Remember to free, this number is going to be abs
@@ -242,20 +256,21 @@ void print_di(t_fs *f_str, long long ll)
 	int		len;
 	int		diff;
 			
-//	TODO: make function for prefix offset (plus and space), negative sign should also be before zeroes, so maybe dont use itoa at all? Or use it only to get positive number and handle prefix seperatly
-	nb = absolute_itoa(ll); //Remember to free, Make a function to decide which type of number is parsed, d , o or x, malloc protection is in handle_width
-	out = handle_width(f_str, ll, nb); //Remember to free
-	diff = f_str->width - ft_strlen(nb);
+	nb = absolute_itoa(ll, &len); //Make a function to decide which type of number is parsed, d , o or x, malloc protection is in handle_width
+	out = handle_width(f_str, ll, nb, len); //Remember to free
+	diff = f_str->width - len;
 	ft_memset(out, ' ', f_str->width);
 	if (f_str->flags & MINUS)
+	{
 		if (ll < 0 || f_str->flags & PLUS || f_str->flags & SPACE)
 			diff = 1;
 		else
 			diff = 0;
+	}
 	if (!(f_str->flags & MINUS) && (f_str->flags & ZERO))
 		ft_memset(out, '0', f_str->width);
-	ft_memcpy(out + diff, nb, ft_strlen(nb));
 	set_prefix(f_str, out, ll, diff);
+	ft_memcpy((out + diff), nb, len);
 	write(1, out, f_str->width);
 	++f_str->str;
 	free(nb);
@@ -267,6 +282,7 @@ void print_conversion(t_fs *f_str, long long ll)
 	char c;
 
 	c = *f_str->str;
+	//Add calls for the rest of diouxX, modify print_di to take care of things
 	if (c == 'd' || c == 'i')
 		print_di(f_str, (int)ll); //Does the casting work??
 }
@@ -303,7 +319,7 @@ void parse_conversion(t_fs *f_str)
 
 void parser(t_fs f_str)
 {
-	char **str;
+	const char **str;
 	int *n;
 
 	n = &f_str.return_n;
@@ -329,7 +345,7 @@ void parser(t_fs f_str)
 	//If we find \0 before conversion, nothing gets printed int the '%'-'\0' range, is it correcto?
 }
 
-int	ft_printf(char *str, ...)
+int	ft_printf(const char *str, ...)
 {
 	//TEST that implicit formatting works
 	t_fs	f_str;
