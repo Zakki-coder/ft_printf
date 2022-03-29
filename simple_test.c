@@ -235,20 +235,6 @@ void test_d_i()
 	printf("helllo |%4li|, |%2li|\n", 3, 8);
 }
 
-void test_abs_itoa()
-{
-	char *s;
-	int	n;
-
-	s = absolute_itoa(LLONG_MIN, &n);
-	printf("%s\n", s);
-	s = absolute_itoa(LLONG_MIN + 1, &n);
-	printf("%s\n", s);
-	s = absolute_itoa(0, &n);
-	printf("%s\n", s);
-	s = absolute_itoa(LLONG_MAX, &n);
-	printf("%s\n", s);
-}
 void test_x()
 {
 	printf("%#o\n", 10);
@@ -256,7 +242,23 @@ void test_x()
 
 void wtf(void)
 {	
-	printf("%*.*d", 44, 12, 47);
+//	printf("%*.*d", 44);
+//	printf("|%llhlhlhlhlhlhllhlhlhl  l hlhlhlhllhlhlhld|",-482512345);
+//	int	n = -42;
+	long ln;
+//	long long lln = ln;
+//
+//	printf("long: %ld\n", n);
+//	printf("long long: %lld\n", n);
+//	ft_printf("Argument is +-42: |%ld|, |%ld|, |%li|\n", n, n, n);
+//	ln = LONG_MAX;
+//	ft_printf("Argument is LONG_MAX: |%ld|, |%ld|, |%li|\n", ln, ln, ln);
+//	printf("Argument is LONG_MAX: |%ld|, |%ld|, |%li|\n", ln, ln, ln);
+//	ln = LONG_MIN;
+//	ft_printf("Argument is LONG_MIX: |%ld|, |%ld|, |%li|\n", ln, ln, ln);
+//	printf("Argument is LONG_MIX: |%ld|, |%ld|, |%li|\n", ln, ln, ln);
+	ft_printf("Argument is INT_MIN: |%+d|\n", INT_MIN);
+	
 	return ;
 }
 
@@ -268,7 +270,6 @@ int main(void)
 //	test_get_precision();
 //	test_get_modifiers();	
 //	how_convers();
-//	test_abs_itoa();
 //	test_d_i();
 //	test_x();
 	wtf();

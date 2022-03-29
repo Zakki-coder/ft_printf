@@ -6,7 +6,7 @@
 /*   By: jniemine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 17:51:33 by jniemine          #+#    #+#             */
-/*   Updated: 2022/03/25 13:49:24 by jniemine         ###   ########.fr       */
+/*   Updated: 2022/03/29 21:58:32 by jniemine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,25 +171,35 @@ long long get_argument(t_fs *f_str)
 	return (arg);
 }
 
+static int	nb_length(long long nb)
+{
+	int	n;
 
-char *handle_width(t_fs *f_str, long long ll, char *nb, int len)
+	n = 0;
+//	if (n < 0)
+//		++n;
+	if (nb == 0)
+		return (1);
+	while (nb)
+	{
+		++n;
+		nb /= 10;
+	}
+	return (n);
+}
+
+void handle_width(t_fs *f_str, long long ll, int len)
 {
 	int f;
 	char *ret;
 
 	f = f_str->flags;
-	if (nb == NULL)
-		exit(-1);
 	if (len > f_str->width)
 		f_str->width = len;
 	if (f_str->precision > f_str->width)
 		f_str->width = f_str->precision; //Behaves differently with float
 	if (len == f_str->width && (ll < 0 || f & PLUS || f & SPACE)) //Protect for int overflow if you want
 		++f_str->width;
-	ret = (char *)ft_memalloc(sizeof(*ret) * f_str->width);	
-	if (ret == NULL)
-		exit(-1);
-	return (ret);
 }
 
 int is_signed(char c)
@@ -219,35 +229,33 @@ void set_prefix(t_fs *f_str, char *out, long long ll, int diff)
 		*(out + diff - 1) = prefix;
 }
 
-char *absolute_itoa(long long ll, int *len)
+char *not_itoa(char *out, long long nb, int len, int diff)
 {
+	long long ll;
 	long long	llong_min;
-	long long	ll_the_second;
-	char		*nb;
 
-	*len = 0;
-	ll_the_second = ll;
-	if(ll_the_second == 0)
-		++*len;
-	while(ll_the_second)
-	{
-		++*len;
-		ll_the_second /= 10;
-	}
+	ll = 0;
 	llong_min = -9223372036854775807 - 1;
-	if (ll == llong_min)
-		return("9223372036854775808");
-	if(ll < 0)
-		ll *= -1;
-	nb = ft_itoa(ll);
-	return (nb);
+	if (nb == llong_min)
+	{
+		ft_memcpy(out + diff, "9223372036854775808", 19); 
+		return (out);
+	}
+	if (nb < 0)
+		nb *= -1;
+	while (len > 0)
+	{
+		ll = nb - ((nb / 10) * 10);
+		nb /= 10;
+		*(out + diff + --len) = ll + '0';
+	}	
+	return (out);
 }
 	
 char *process_conversion(t_fs *f_str, long long ll)
 {
 			//call either absolute_itoa, otoa, or xtoa
 }
-
 
 void print_di(t_fs *f_str, long long ll)
 {
@@ -256,9 +264,12 @@ void print_di(t_fs *f_str, long long ll)
 	int		len;
 	int		diff;
 			
-	nb = absolute_itoa(ll, &len); //Make a function to decide which type of number is parsed, d , o or x, malloc protection is in handle_width
-	out = handle_width(f_str, ll, nb, len); //Remember to free
+	len = nb_length(ll);
+	handle_width(f_str, ll, len); //Remember to free
 	diff = f_str->width - len;
+	out = (char *)ft_memalloc(sizeof(*out) * len + 100);
+	if (out == NULL)
+		exit (-1);
 	ft_memset(out, ' ', f_str->width);
 	if (f_str->flags & MINUS)
 	{
@@ -269,21 +280,30 @@ void print_di(t_fs *f_str, long long ll)
 	}
 	if (!(f_str->flags & MINUS) && (f_str->flags & ZERO))
 		ft_memset(out, '0', f_str->width);
+	out = not_itoa(out, ll, len, diff); //Make a function to decide which type of number is parsed, d , o or x, malloc protection is in handle_width
 	set_prefix(f_str, out, ll, diff);
-	ft_memcpy((out + diff), nb, len);
+//	ft_memcpy((out + diff), nb, len);
 	write(1, out, f_str->width);
 	++f_str->str;
-	free(nb);
 	free(out);
 }	
 
 void print_conversion(t_fs *f_str, long long ll)
 {
-	char c;
+	int m;
 
-	c = *f_str->str;
+	m = f_str->modifier;
 	//Add calls for the rest of diouxX, modify print_di to take care of things
-	if (c == 'd' || c == 'i')
+	//Modifier decides casting, diouxX is just the format
+	if (m & LLONG)
+		print_di(f_str, (long long)ll); //Does the casting work??
+	else if (m & LONG)
+		print_di(f_str, (long)ll); //Does the casting work??
+	else if (m & SHORT)
+		print_di(f_str, (short)ll); //Does the casting work??
+	else if (m & CHAR)
+		print_di(f_str, (char)ll); //Does the casting work??
+	else
 		print_di(f_str, (int)ll); //Does the casting work??
 }
 	
