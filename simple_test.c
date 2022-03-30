@@ -135,104 +135,11 @@ void how_convers()
 
 void test_d_i()
 {
-	ft_printf("helllo %d\n", INT_MAX);
-	printf("helllo %d\n", INT_MAX);
-	ft_printf("helllo %d\n", 0);
-	printf("helllo %d\n", 0);
-  ft_printf("helllo %d\n", INT_MIN);
-  printf("helllo %d\n", INT_MIN);
-	ft_printf("helllo %+d\n", INT_MAX);
-	printf("helllo %+d\n", INT_MAX);
-	ft_printf("helllo %+d\n", 0);
- 	printf("helllo %+d\n", 0);
-	ft_printf("helllo %+d\n", INT_MIN);
-	printf("helllo %+d\n", INT_MIN);
-	ft_printf("helllo %-d\n", INT_MAX);
-	printf("helllo %-d\n", INT_MAX);
-	ft_printf("helllo %-d\n", 0);
-	printf("helllo %-d\n", 0);
-	ft_printf("helllo %-d\n", INT_MIN);
-	printf("helllo %-d\n", INT_MIN);
-	ft_printf("helllo %#d\n", INT_MAX);
-	printf("helllo %#d\n", INT_MAX);
-	ft_printf("helllo %#d\n", 0);
-	printf("helllo %#d\n", 0);
-	ft_printf("helllo %#d\n", INT_MIN);
-	printf("helllo %#d\n", INT_MIN);
-	ft_printf("helllo |%0d|\n", INT_MAX);
-	printf("helllo |%0d|\n", INT_MAX);
-	ft_printf("helllo |%0d|\n", 0);
-	printf("helllo |%0d|\n", 0);
-	ft_printf("helllo %0d\n", INT_MIN);
-	printf("helllo %0d\n", INT_MIN);
-	ft_printf("helllo % d\n", INT_MAX);
-	printf("helllo % d\n", INT_MAX);
-	ft_printf("helllo % d\n", 0);
-	printf("helllo % d\n", 0);
-	ft_printf("helllo % d\n", INT_MIN);
-	printf("helllo % d\n", INT_MIN);
-	ft_printf("helllo |% 4d|\n", 3);
-	printf("helllo |% 4d|\n", 3);
-	ft_printf("helllo |%4 d|\n", 0);
-	printf("helllo |%4 d|\n", 0);
-	ft_printf("helllo |% 4d|\n", 3);
-	printf("helllo |% 4d|\n", 3);
-	ft_printf("helllo |% .4d|\n", 3);
-	printf("helllo |% .4d|\n", 3);
-	ft_printf("helllo |%.4 d|\n", 0);
-	printf("helllo |%.4 d|\n", 0);
-	ft_printf("helllo |% .4d|\n", 3);
-	printf("helllo |% .4d|\n", 3);
-	ft_printf("helllo |%0.4d|\n", 3);
-	printf("helllo |%0.4d|\n", 3);
-	ft_printf("helllo |%.40d|\n", 0);
-	printf("helllo |%.40d|\n", 0);
-	ft_printf("helllo |%0.4d|\n", 3);
-	printf("helllo |%0.4d|\n", 3);
-	ft_printf("helllo |%0.4d|\n", 3);
-	printf("helllo |%0.4d|\n", 3);
-	ft_printf("helllo |%.40d|\n", 0);
-	printf("helllo |%.40d|\n", 0);
-	ft_printf("helllo |%0.4d|\n", 3);
-	printf("helllo |%0.4d|\n", 3);
-	ft_printf("helllo |%0-4d|\n", 3);
-	printf("helllo |%0-4d|\n", 3);
-	ft_printf("helllo |%40-d|\n", 0);
-	printf("helllo |%40-d|\n", 0);
-	ft_printf("helllo |%4+0d|\n", 5);
-	printf("helllo |%4+0d|\n", 5);
-	ft_printf("helllo |%-04d|\n", 3);
-	printf("helllo |%-04d|\n", 3);
-	ft_printf("helllo |%0-+4d|\n", 3);
-	printf("helllo |%0-+4d|\n", 3);
-	ft_printf("helllo |%4-+d|\n", 0);
-	printf("helllo |%4-+d|\n", 0);
-	ft_printf("helllo |%+-04d|\n", 3);
-	printf("helllo |%+-04d|\n", 3);
-	ft_printf("helllo |%0- 4d|\n", 3);
-	printf("helllo |%0- 4d|\n", 3);
-	ft_printf("helllo |%4- d|\n", 0);
-	printf("helllo |%4- d|\n", 0);
-	ft_printf("helllo |% -04d|\n", 3);
-	printf("helllo |% -04d|\n", 3);
-	ft_printf("helllo |%0- 4d|\n", 3456789);
-	printf("helllo |%0- 4d|\n", 3456789);
-	ft_printf("helllo |% -04d|\n", -3456789);
-	printf("helllo |% -04d|\n", -3456789);
-	ft_printf("helllo |%0- +4d|\n", 3);
-	printf("helllo |%0- +4d|\n", 3);
-	ft_printf("helllo |% -0+4d|\n", 3);
-	printf("helllo |% -0+4d|\n", 3);
-	ft_printf("helllo |%0 +4d|\n", 3);
-	printf("helllo |%0 +4d|\n", 3);
-	ft_printf("helllo |%0 +4d|\n", 0);
-	printf("helllo |%0 +4d|\n", 0);
-	ft_printf("helllo |%0 +4d|\n", 3);
-	printf("helllo |%0 +4d|\n", 3);
-  ft_printf("helllo |%0 4d|\n", -3);
-  printf("helllo |%0 4d|\n", -3);
-	ft_printf("helllo |%4li|, |%2li|\n", 3, 8);
-	printf("helllo |%4li|, |%2li|\n", 3, 8);
+	unsigned long ld;
+
+	ld = ULONG_MAX;
+	printf("ULONG_MAX: %lu\n", ld);
+	ft_printf("ULONG_MAX: %lu\n", ld);
 }
 
 void test_x()
@@ -245,8 +152,8 @@ void wtf(void)
 //	printf("%*.*d", 44);
 //	printf("|%llhlhlhlhlhlhllhlhlhl  l hlhlhlhllhlhlhld|",-482512345);
 //	int	n = -42;
-	long ln;
-//	long long lln = ln;
+//	long ln;
+	long long lln;
 //
 //	printf("long: %ld\n", n);
 //	printf("long long: %lld\n", n);
@@ -254,11 +161,12 @@ void wtf(void)
 //	ln = LONG_MAX;
 //	ft_printf("Argument is LONG_MAX: |%ld|, |%ld|, |%li|\n", ln, ln, ln);
 //	printf("Argument is LONG_MAX: |%ld|, |%ld|, |%li|\n", ln, ln, ln);
-//	ln = LONG_MIN;
-//	ft_printf("Argument is LONG_MIX: |%ld|, |%ld|, |%li|\n", ln, ln, ln);
-//	printf("Argument is LONG_MIX: |%ld|, |%ld|, |%li|\n", ln, ln, ln);
-	ft_printf("Argument is INT_MIN: |%+d|\n", INT_MIN);
-	
+//	lln = LONG_MIN;
+//	ft_printf("Argument is LONG_MIX: |%ld|, |%ld|, |%li|\n", lln, lln, lln);
+//	printf("Argument is LONG_MIX: |%ld|, |%ld|, |%li|\n", lln, lln, lln);
+//	printf("Argument is LLONG_MAX:  |%llu|\n", LLONG_MAX);
+//	printf("Argument is ULLONG_MAX: |%llu|\n", ULLONG_MAX);
+	ft_printf("Argument is INT_MAX: |%u|\n", UINT_MAX);
 	return ;
 }
 

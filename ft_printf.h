@@ -6,7 +6,7 @@
 /*   By: jniemine <jniemine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 15:15:00 by jniemine          #+#    #+#             */
-/*   Updated: 2022/03/25 13:47:15 by jniemine         ###   ########.fr       */
+/*   Updated: 2022/03/30 12:04:13 by jniemine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,24 +29,24 @@
 # define SHORT	4
 # define CHAR	1	
 
-typedef struct	s_format_string
+typedef struct s_format_string
 {
 	const char	*str;
-	va_list	argcs;
-	int		return_n;
-	int		flags;
-	int		width;
-	int		precision;
-	int		modifier;
-	int		conversion;
+	va_list		argcs;
+	int			return_n;
+	int			flags;
+	int			width;
+	int			precision;
+	int			modifier;
+	int			conversion;
 }				t_fs;
 
-char *absolute_itoa(long long ll, int *n); //FOR DEBUG
-void get_modifiers(t_fs *f_str);	//FOR DEBUG
-void get_precision(t_fs *f_str); //FOR DEBUG
-void get_width(t_fs *f_str);	//FOR DEBUG
-void get_flags(t_fs *f_str); //FOR DEBUG
-int is_conversion(char c);	//FOR DEBUG
-int	ft_printf(const char *str, ...);
+char	*absolute_itoa(long long ll, int *n); //FOR DEBUG
+void	get_modifiers(t_fs *f_str);	//FOR DEBUG
+void	get_precision(t_fs *f_str); //FOR DEBUG
+void	get_width(t_fs *f_str);	//FOR DEBUG
+void	get_flags(t_fs *f_str); //FOR DEBUG
+int		is_conversion(char c);	//FOR DEBUG
+int		ft_printf(const char *str, ...);
 
 #endif

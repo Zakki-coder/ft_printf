@@ -6,7 +6,7 @@
 /*   By: jniemine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 17:51:33 by jniemine          #+#    #+#             */
-/*   Updated: 2022/03/29 21:58:32 by jniemine         ###   ########.fr       */
+/*   Updated: 2022/03/30 23:43:26 by jniemine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,8 +176,6 @@ static int	nb_length(long long nb)
 	int	n;
 
 	n = 0;
-//	if (n < 0)
-//		++n;
 	if (nb == 0)
 		return (1);
 	while (nb)
@@ -231,17 +229,15 @@ void set_prefix(t_fs *f_str, char *out, long long ll, int diff)
 
 char *not_itoa(char *out, long long nb, int len, int diff)
 {
-	long long ll;
-	long long	llong_min;
+	unsigned long long	ll;
 
 	ll = 0;
-	llong_min = -9223372036854775807 - 1;
-	if (nb == llong_min)
+	if (nb == -9223372036854775807 - 1)
 	{
 		ft_memcpy(out + diff, "9223372036854775808", 19); 
 		return (out);
 	}
-	if (nb < 0)
+	else if (nb < 0)
 		nb *= -1;
 	while (len > 0)
 	{
@@ -251,15 +247,10 @@ char *not_itoa(char *out, long long nb, int len, int diff)
 	}	
 	return (out);
 }
-	
-char *process_conversion(t_fs *f_str, long long ll)
-{
-			//call either absolute_itoa, otoa, or xtoa
-}
 
+//TODO	Make own function chain for unsigned values starting from get_args 
 void print_di(t_fs *f_str, long long ll)
 {
-	char	*nb; //Remember to free, this number is going to be abs
 	char	*out; //Remember to free
 	int		len;
 	int		diff;
@@ -267,7 +258,7 @@ void print_di(t_fs *f_str, long long ll)
 	len = nb_length(ll);
 	handle_width(f_str, ll, len); //Remember to free
 	diff = f_str->width - len;
-	out = (char *)ft_memalloc(sizeof(*out) * len + 100);
+	out = (char *)ft_memalloc(sizeof(*out) * len + 100); //REMOVE +100
 	if (out == NULL)
 		exit (-1);
 	ft_memset(out, ' ', f_str->width);
@@ -282,13 +273,20 @@ void print_di(t_fs *f_str, long long ll)
 		ft_memset(out, '0', f_str->width);
 	out = not_itoa(out, ll, len, diff); //Make a function to decide which type of number is parsed, d , o or x, malloc protection is in handle_width
 	set_prefix(f_str, out, ll, diff);
-//	ft_memcpy((out + diff), nb, len);
 	write(1, out, f_str->width);
 	++f_str->str;
 	free(out);
 }	
 
-void print_conversion(t_fs *f_str, long long ll)
+/* Every conversion has a width for the whole, length for just the digits and offset for where to print it the field */
+void function_dispatcher(t_fs *f_str, long long ll)
+{
+			//call either absolute_itoa, otoa, or xtoa, or the unsigned one
+	if(*f_str->str == 'd' || *f_str->str == 'i')	
+		print_di(f_str, ll);
+}
+
+long long cast_to_modified(t_fs *f_str, long long ll)
 {
 	int m;
 
@@ -296,15 +294,15 @@ void print_conversion(t_fs *f_str, long long ll)
 	//Add calls for the rest of diouxX, modify print_di to take care of things
 	//Modifier decides casting, diouxX is just the format
 	if (m & LLONG)
-		print_di(f_str, (long long)ll); //Does the casting work??
+		return((long long)ll);//print_di(f_str, (long long)ll);
 	else if (m & LONG)
-		print_di(f_str, (long)ll); //Does the casting work??
+		return((long)ll);//print_di(f_str, (long)ll);
 	else if (m & SHORT)
-		print_di(f_str, (short)ll); //Does the casting work??
+		return((short)ll);//print_di(f_str, (short)ll);
 	else if (m & CHAR)
-		print_di(f_str, (char)ll); //Does the casting work??
+		return((char)ll);//print_di(f_str, (char)ll);
 	else
-		print_di(f_str, (int)ll); //Does the casting work??
+		return((int)ll);//print_di(f_str, (int)ll);
 }
 	
 /* Never format string or argcs */
@@ -320,8 +318,8 @@ void format_fs(t_fs *f_str)
 
 void parse_conversion(t_fs *f_str)
 {
-	long double		ld;
-	long long int	ll;
+	long double			ld;
+	long long int		ll;
 	//str should be pointing to conversion
 	//make a function which gets the argument from stack
 	//Conver the value to octal-, hexa-, integer- or float string
@@ -329,7 +327,8 @@ void parse_conversion(t_fs *f_str)
 	if (*f_str->str != 'f')
 	{
 		ll = get_argument(f_str);
-		print_conversion(f_str, ll);
+		ll = cast_to_modified(f_str, ll);
+		function_dispatcher(f_str, ll);
 	}
 	else
 		;

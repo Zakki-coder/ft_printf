@@ -50,7 +50,7 @@ void	dump_it(char **inputs, char *res, char *res2, char *test_name)
 	write_to_file(inputs, res, res2, fd, fd2);
 	lseek(fd, 0, SEEK_SET);
 	lseek(fd2, 0, SEEK_SET);
-	fd3 = open("results/errors.txt", O_RDWR | O_TRUNC | O_CREAT, 00644);
+	fd3 = open("results/errors.txt", O_RDWR | O_APPEND | O_CREAT, 00644);
 	if (fd3 < 0)
 	{
 		printf("Open failed in dump_it\n");
@@ -113,6 +113,7 @@ void test_hash_flag(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -160,6 +161,7 @@ void test_zero_flag(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -205,6 +207,7 @@ void test_minus_flag(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -252,6 +255,7 @@ void test_space_flag(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -298,6 +302,7 @@ void test_plus_flag(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -346,6 +351,7 @@ void test_min_width(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -399,6 +405,7 @@ void test_precision(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -476,6 +483,7 @@ void test_length_mod_hh(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -536,6 +544,7 @@ void test_length_mod_h(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -605,6 +614,7 @@ void test_length_mod_l(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -686,6 +696,7 @@ void test_length_mod_ll(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -761,6 +772,7 @@ void test_length_mod_l_and_L_with_float(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -815,6 +827,7 @@ void test_print_with_percent(int print_to_console)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -870,6 +883,7 @@ void test_some_edges()
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -1081,6 +1095,7 @@ void test_d_and_i(void)
 	{
 		dump_it(inputs, res, res2, test_name);
 		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
 		return ;
 	}
 	close (p[0]);
@@ -1099,6 +1114,383 @@ void wtf(void)
 	return ;
 }
 
+void test_unsigned_conversion_with_char()
+{	
+	char *test_name = "test_unsigned_conversion_with_char";
+	int buf_size = 500;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[10];
+	int i = 0;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%hhu|\n";
+	inputs[i++] = "Argument is CHAR_MIN: |%hhu|\n";
+	inputs[i++] = "Argument is CHAR_MAX: |%hhu|\n";
+	inputs[i++] = "Argument is UCHAR_MAX: |%hhu|\n";
+	i = 0;
+	printf(inputs[i++], 0); 
+	printf(inputs[i++], CHAR_MIN); 
+	printf(inputs[i++], CHAR_MAX); 
+	printf(inputs[i++], UCHAR_MAX); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+	
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%hhu|\n";
+	inputs[i++] = "Argument is CHAR_MIN: |%hhu|\n";
+	inputs[i++] = "Argument is CHAR_MAX: |%hhu|\n";
+	inputs[i++] = "Argument is UCHAR_MAX: |%hhu|\n";
+	i = 0;
+	ft_printf(inputs[i++], 0); 
+	ft_printf(inputs[i++], CHAR_MIN); 
+	ft_printf(inputs[i++], CHAR_MAX); 
+	ft_printf(inputs[i++], UCHAR_MAX); 
+	
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+
+void test_unsigned_conversion_with_short()
+{	
+	char *test_name = "test_unsigned_conversion_with_short";
+	int buf_size = 500;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[10];
+	int i = 0;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%hu|\n";
+	inputs[i++] = "Argument is SHORT_MIN: |%hu|\n";
+	inputs[i++] = "Argument is SHORT_MAX: |%hu|\n";
+	inputs[i++] = "Argument is USHORT_MAX: |%hu|\n";
+	i = 0;
+	printf(inputs[i++], 0); 
+	printf(inputs[i++], SHRT_MIN); 
+	printf(inputs[i++], SHRT_MAX); 
+	printf(inputs[i++], USHRT_MAX); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%hu|\n";
+	inputs[i++] = "Argument is SHORT_MIN: |%hu|\n";
+	inputs[i++] = "Argument is SHORT_MAX: |%hu|\n";
+	inputs[i++] = "Argument is USHORT_MAX: |%hu|\n";
+	i = 0;
+	ft_printf(inputs[i++], 0); 
+	ft_printf(inputs[i++], SHRT_MIN); 
+	ft_printf(inputs[i++], SHRT_MAX); 
+	ft_printf(inputs[i++], USHRT_MAX); 
+	
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+
+void test_unsigned_conversion_with_int()
+{	
+	char *test_name = "test_unsigned_conversion_with_int";
+	int buf_size = 500;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[10];
+	int i = 0;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%u|\n";
+	inputs[i++] = "Argument is INT_MIN: |%u|\n";
+	inputs[i++] = "Argument is INT_MAX: |%u|\n";
+	inputs[i++] = "Argument is UINT_MAX: |%u|\n";
+	i = 0;
+	printf(inputs[i++], 0); 
+	printf(inputs[i++], INT_MIN); 
+	printf(inputs[i++], INT_MAX); 
+	printf(inputs[i++], UINT_MAX); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%u|\n";
+	inputs[i++] = "Argument is INT_MIN: |%u|\n";
+	inputs[i++] = "Argument is INT_MAX: |%u|\n";
+	inputs[i++] = "Argument is UINT_MAX: |%u|\n";
+	i = 0;
+	ft_printf(inputs[i++], 0); 
+	ft_printf(inputs[i++], INT_MIN); 
+	ft_printf(inputs[i++], INT_MAX); 
+	ft_printf(inputs[i++], UINT_MAX); 
+
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+
+void test_unsigned_conversion_with_long()
+{	
+	char *test_name = "test_unsigned_conversion_with_long";
+	int buf_size = 500;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[10];
+	int i = 0;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%lu|\n";
+	inputs[i++] = "Argument is LONG_MIN: |%lu|\n";
+	inputs[i++] = "Argument is LONG_MAX: |%lu|\n";
+	inputs[i++] = "Argument is ULONG_MAX: |%lu|\n";
+	i = 0;
+	printf(inputs[i++], 0); 
+	printf(inputs[i++], LONG_MIN); 
+	printf(inputs[i++], LONG_MAX); 
+	printf(inputs[i++], ULONG_MAX); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%lu|\n";
+	inputs[i++] = "Argument is LONG_MIN: |%lu|\n";
+	inputs[i++] = "Argument is LONG_MAX: |%lu|\n";
+	inputs[i++] = "Argument is ULONG_MAX: |%lu|\n";
+	i = 0;
+	ft_printf(inputs[i++], 0); 
+	ft_printf(inputs[i++], LONG_MIN); 
+	ft_printf(inputs[i++], LONG_MAX); 
+	ft_printf(inputs[i++], ULONG_MAX); 
+	
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+
+void test_unsigned_conversion_with_long_long()
+{	
+	char *test_name = "test_unsigned_conversion_with_long_long";
+	int buf_size = 500;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[10];
+	int i = 0;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%llu|\n";
+	inputs[i++] = "Argument is LLONG_MIN: |%llu|\n";
+	inputs[i++] = "Argument is LLONG_MAX: |%llu|\n";
+	inputs[i++] = "Argument is ULLONG_MAX: |%llu|\n";
+	i = 0;
+	printf(inputs[i++], 0); 
+	printf(inputs[i++], LLONG_MIN); 
+	printf(inputs[i++], LLONG_MAX); 
+	printf(inputs[i++], ULLONG_MAX); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%llu|\n";
+	inputs[i++] = "Argument is LLONG_MIN: |%llu|\n";
+	inputs[i++] = "Argument is LLONG_MAX: |%llu|\n";
+	inputs[i++] = "Argument is ULLONG_MAX: |%llu|\n";
+	i = 0;
+	ft_printf(inputs[i++], 0); 
+	ft_printf(inputs[i++], LLONG_MIN); 
+	ft_printf(inputs[i++], LLONG_MAX); 
+	ft_printf(inputs[i++], ULLONG_MAX); 
+
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+
+void test_unsigned_conversion_with_random_stuff()
+{	
+	char *test_name = "test_unsigned_conversion_with_random_stuff";
+	int buf_size = 500;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[10];
+	int i = 0;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%0+5llu|\n";
+	inputs[i++] = "Argument is 42: |%-.14llu|\n";
+	inputs[i++] = "Argument is 42: |%- 4u|\n";
+	inputs[i++] = "Argument is -42: |%0-5u|\n";
+	i = 0;
+	printf(inputs[i++], 0); 
+	printf(inputs[i++], 42); 
+	printf(inputs[i++], 42); 
+	printf(inputs[i++], 42); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+
+	i = 0;
+	inputs[i++] = "Argument is ZERO: |%0+5llu|\n";
+	inputs[i++] = "Argument is 42: |%-.14llu|\n";
+	inputs[i++] = "Argument is 42: |%- 4u|\n";
+	inputs[i++] = "Argument is -42: |%0-5u|\n";
+	i = 0;
+	ft_printf(inputs[i++], 0); 
+	ft_printf(inputs[i++], 42); 
+	ft_printf(inputs[i++], 42); 
+	ft_printf(inputs[i++], 42); 
+	
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
 // not needed when using generate_test_runner.rb
 int main(int argc, char *args) {
 //    UNITY_BEGIN();
@@ -1119,6 +1511,12 @@ int main(int argc, char *args) {
 //	test_print_with_percent(0);
 //	test_some_edges();
 	test_d_and_i();
+	test_unsigned_conversion_with_char();
+	test_unsigned_conversion_with_short();
+	test_unsigned_conversion_with_int();
+	test_unsigned_conversion_with_long();
+	test_unsigned_conversion_with_long_long();
+	test_unsigned_conversion_with_random_stuff();
 	return (0);
 //    return UNITY_END();
 }

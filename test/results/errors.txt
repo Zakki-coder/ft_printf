@@ -34,3 +34,99 @@ test_d_and_i
 Input   : helllo |%4- d|
 Expected: helllo |%4- d|
 Yours   : helllo | 0  |
+test_unsigned_conversion_with_char
+Input   : Argument is ZERO: |%hhu|
+Expected: Argument is ZERO: |0|
+Yours   : Argument is ZERO: |u|
+test_unsigned_conversion_with_char
+Input   : Argument is CHAR_MIN: |%hhu|
+Expected: Argument is CHAR_MIN: |128|
+Yours   : Argument is CHAR_MIN: |u|
+test_unsigned_conversion_with_char
+Input   : Argument is CHAR_MAX: |%hhu|
+Expected: Argument is CHAR_MAX: |127|
+Yours   : Argument is CHAR_MAX: |u|
+test_unsigned_conversion_with_char
+Input   : Argument is UCHAR_MAX: |%hhu|
+Expected: Argument is UCHAR_MAX: |255|
+Yours   : Argument is UCHAR_MAX: |u|
+test_unsigned_conversion_with_short
+Input   : Argument is ZERO: |%hu|
+Expected: Argument is ZERO: |0|
+Yours   : Argument is ZERO: |u|
+test_unsigned_conversion_with_short
+Input   : Argument is SHORT_MIN: |%hu|
+Expected: Argument is SHORT_MIN: |32768|
+Yours   : Argument is SHORT_MIN: |u|
+test_unsigned_conversion_with_short
+Input   : Argument is SHORT_MAX: |%hu|
+Expected: Argument is SHORT_MAX: |32767|
+Yours   : Argument is SHORT_MAX: |u|
+test_unsigned_conversion_with_short
+Input   : Argument is USHORT_MAX: |%hu|
+Expected: Argument is USHORT_MAX: |65535|
+Yours   : Argument is USHORT_MAX: |u|
+test_unsigned_conversion_with_int
+Input   : Argument is ZERO: |%u|
+Expected: Argument is ZERO: |0|
+Yours   : Argument is ZERO: |u|
+test_unsigned_conversion_with_int
+Input   : Argument is INT_MIN: |%u|
+Expected: Argument is INT_MIN: |2147483648|
+Yours   : Argument is INT_MIN: |u|
+test_unsigned_conversion_with_int
+Input   : Argument is INT_MAX: |%u|
+Expected: Argument is INT_MAX: |2147483647|
+Yours   : Argument is INT_MAX: |u|
+test_unsigned_conversion_with_int
+Input   : Argument is UINT_MAX: |%u|
+Expected: Argument is UINT_MAX: |4294967295|
+Yours   : Argument is UINT_MAX: |u|
+test_unsigned_conversion_with_long
+Input   : Argument is ZERO: |%lu|
+Expected: Argument is ZERO: |0|
+Yours   : Argument is ZERO: |u|
+test_unsigned_conversion_with_long
+Input   : Argument is LONG_MIN: |%lu|
+Expected: Argument is LONG_MIN: |9223372036854775808|
+Yours   : Argument is LONG_MIN: |u|
+test_unsigned_conversion_with_long
+Input   : Argument is LONG_MAX: |%lu|
+Expected: Argument is LONG_MAX: |9223372036854775807|
+Yours   : Argument is LONG_MAX: |u|
+test_unsigned_conversion_with_long
+Input   : Argument is ULONG_MAX: |%lu|
+Expected: Argument is ULONG_MAX: |18446744073709551615|
+Yours   : Argument is ULONG_MAX: |u|
+test_unsigned_conversion_with_long_long
+Input   : Argument is ZERO: |%llu|
+Expected: Argument is ZERO: |0|
+Yours   : Argument is ZERO: |u|
+test_unsigned_conversion_with_long_long
+Input   : Argument is LLONG_MIN: |%llu|
+Expected: Argument is LLONG_MIN: |9223372036854775808|
+Yours   : Argument is LLONG_MIN: |u|
+test_unsigned_conversion_with_long_long
+Input   : Argument is LLONG_MAX: |%llu|
+Expected: Argument is LLONG_MAX: |9223372036854775807|
+Yours   : Argument is LLONG_MAX: |u|
+test_unsigned_conversion_with_long_long
+Input   : Argument is ULLONG_MAX: |%llu|
+Expected: Argument is ULLONG_MAX: |18446744073709551615|
+Yours   : Argument is ULLONG_MAX: |u|
+test_unsigned_conversion_with_random_stuff
+Input   : Argument is ZERO: |%0+5llu|
+Expected: Argument is ZERO: |00000|
+Yours   : Argument is ZERO: |u|
+test_unsigned_conversion_with_random_stuff
+Input   : Argument is 42: |%-.14llu|
+Expected: Argument is 42: |00000000000042|
+Yours   : Argument is 42: |u|
+test_unsigned_conversion_with_random_stuff
+Input   : Argument is 42: |%- 4u|
+Expected: Argument is 42: |42  |
+Yours   : Argument is 42: |u|
+test_unsigned_conversion_with_random_stuff
+Input   : Argument is -42: |%0-5u|
+Expected: Argument is -42: |42   |
+Yours   : Argument is -42: |u|
