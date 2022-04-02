@@ -6,7 +6,7 @@
 /*   By: jniemine <jniemine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 15:15:00 by jniemine          #+#    #+#             */
-/*   Updated: 2022/03/30 12:04:13 by jniemine         ###   ########.fr       */
+/*   Updated: 2022/04/02 16:07:12 by jniemine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # define LONG	16
 # define SHORT	4
 # define CHAR	1	
+# define MAX_INT 2147483647
 
 typedef struct s_format_string
 {
@@ -37,10 +38,15 @@ typedef struct s_format_string
 	int			flags;
 	int			width;
 	int			precision;
+	int			is_precision;
 	int			modifier;
 	int			conversion;
+	int			neg;
 }				t_fs;
 
+void	print_octal(t_fs *f_str, unsigned long long ull);
+void	abs_putnbr(unsigned long long n);		//FOR DEBUG
+unsigned long long	convert_to_octal(unsigned long long ull); //FOR DEBUG
 char	*absolute_itoa(long long ll, int *n); //FOR DEBUG
 void	get_modifiers(t_fs *f_str);	//FOR DEBUG
 void	get_precision(t_fs *f_str); //FOR DEBUG

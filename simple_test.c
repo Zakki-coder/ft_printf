@@ -135,11 +135,8 @@ void how_convers()
 
 void test_d_i()
 {
-	unsigned long ld;
-
-	ld = ULONG_MAX;
-	printf("ULONG_MAX: %lu\n", ld);
-	ft_printf("ULONG_MAX: %lu\n", ld);
+	printf("Why? |%.40d|\n", 5);
+	ft_printf("Why? |%.40d|\n", 5);
 }
 
 void test_x()
@@ -166,8 +163,29 @@ void wtf(void)
 //	printf("Argument is LONG_MIX: |%ld|, |%ld|, |%li|\n", lln, lln, lln);
 //	printf("Argument is LLONG_MAX:  |%llu|\n", LLONG_MAX);
 //	printf("Argument is ULLONG_MAX: |%llu|\n", ULLONG_MAX);
-	ft_printf("Argument is INT_MAX: |%u|\n", UINT_MAX);
+	ft_printf("Argument is UINT_MAX: |%u|\n", UINT_MAX);
 	return ;
+}
+
+void test_octal_len()
+{
+	int ret;
+	unsigned long o_ret;
+	unsigned long test_nb = LLONG_MIN;
+	
+		printf("%llo\n", test_nb);
+		printf("\n");
+}
+
+void test_print_octal()
+{
+	int d = 0;
+
+//	printf("Correct Precision 0: |%4.2o|\n", 0); 
+//	printf("Correct Precision 0: |%#4.o|\n", 0); 
+//	ft_printf("Correct Precision 0: |%4.o|\n", 3); 
+//	ft_printf("Input   : Argument is UINT_MAX: |%+ o|\n", UINT_MAX);
+	//If precision larger than width and number then add zeroes to front
 }
 
 int main(void)
@@ -178,8 +196,10 @@ int main(void)
 //	test_get_precision();
 //	test_get_modifiers();	
 //	how_convers();
-//	test_d_i();
+	test_d_i();
 //	test_x();
-	wtf();
+//	wtf();
+//	test_octal_len();
+//	test_print_octal();
 	return (0);
 }

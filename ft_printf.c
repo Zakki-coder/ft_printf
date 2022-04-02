@@ -6,7 +6,7 @@
 /*   By: jniemine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 17:51:33 by jniemine          #+#    #+#             */
-/*   Updated: 2022/03/30 23:43:26 by jniemine         ###   ########.fr       */
+/*   Updated: 2022/04/02 17:04:07 by jniemine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void get_width(t_fs *f_str)
 	if (ft_isdigit(**s))
 	{
 		n = not_atoi(s);
-		if(n > f_str->width)
+		if(n > f_str->width && n <= MAX_INT) //At least on linux this is the limit
 			f_str->width = n;
 	}
 }
@@ -109,14 +109,13 @@ void get_precision(t_fs *f_str)
 	s = &f_str->str;
 	if(**s == '.')
 	{
-		if (f_str->precision < 0)
-			f_str->precision = 0;
+		f_str->is_precision = 1;
 		while (**s == '.')
 			++(*s);
 		if(ft_isdigit(**s))
 		{
 			n = not_atoi(s);
-			if(n > f_str->precision)
+			if(n > f_str->precision && n <= MAX_INT)
 				f_str->precision = n;
 		}
 	}
@@ -171,7 +170,7 @@ long long get_argument(t_fs *f_str)
 	return (arg);
 }
 
-static int	nb_length(long long nb)
+static int	nb_length(unsigned long long nb)
 {
 	int	n;
 
@@ -186,7 +185,8 @@ static int	nb_length(long long nb)
 	return (n);
 }
 
-void handle_width(t_fs *f_str, long long ll, int len)
+/* This doesnt need the ll argument anymore, argument long long ll has been removed*/
+void handle_width(t_fs *f_str, int len)
 {
 	int f;
 	char *ret;
@@ -196,8 +196,10 @@ void handle_width(t_fs *f_str, long long ll, int len)
 		f_str->width = len;
 	if (f_str->precision > f_str->width)
 		f_str->width = f_str->precision; //Behaves differently with float
-	if (len == f_str->width && (ll < 0 || f & PLUS || f & SPACE)) //Protect for int overflow if you want
-		++f_str->width;
+	if (len == f_str->width && (f_str->neg || f & PLUS || f & SPACE)) //Protect for int overflow if you wanth
+		if (*f_str->str == 'd' || *f_str->str == 'i'
+		&& f_str->width < MAX_INT) //At least on linux this is the limit.
+			++f_str->width;
 }
 
 int is_signed(char c)
@@ -213,7 +215,7 @@ void set_prefix(t_fs *f_str, char *out, long long ll, int diff)
 	f = f_str->flags;
 	if (!is_signed(*f_str->str))
 		return ;	
-	if (ll < 0)
+	if (f_str->neg)
 		prefix = '-';
 	else if (f & PLUS)
 		prefix = '+';
@@ -227,18 +229,11 @@ void set_prefix(t_fs *f_str, char *out, long long ll, int diff)
 		*(out + diff - 1) = prefix;
 }
 
-char *not_itoa(char *out, long long nb, int len, int diff)
+char *not_itoa(char *out, unsigned long long nb, int len, int diff)
 {
 	unsigned long long	ll;
 
 	ll = 0;
-	if (nb == -9223372036854775807 - 1)
-	{
-		ft_memcpy(out + diff, "9223372036854775808", 19); 
-		return (out);
-	}
-	else if (nb < 0)
-		nb *= -1;
 	while (len > 0)
 	{
 		ll = nb - ((nb / 10) * 10);
@@ -248,17 +243,36 @@ char *not_itoa(char *out, long long nb, int len, int diff)
 	return (out);
 }
 
-//TODO	Make own function chain for unsigned values starting from get_args 
+unsigned long long convert_from_negativity(t_fs *f_str, long long ll)
+{
+	unsigned long long ull;
+
+	ull = 0;
+	if (*f_str->str != 'u' && ll < 0)
+	{
+		f_str->neg = 1;
+		if (ll == -9223372036854775807 - 1)
+			ull = (unsigned long long)9223372036854775807 + 1;
+		else
+			ull = ll * -1;
+		return (ull);
+	}
+	ull = ll;
+	return (ull);
+}
+//TODO Should add zeroes before number if precision is given and no minus flag, also sometimes whitespace is missing. 
 void print_di(t_fs *f_str, long long ll)
 {
 	char	*out; //Remember to free
 	int		len;
 	int		diff;
+	unsigned long long ull;
 			
-	len = nb_length(ll);
-	handle_width(f_str, ll, len); //Remember to free
+	ull = convert_from_negativity(f_str, ll);
+	len = nb_length(ull);
+	handle_width(f_str, len); //Remember to free
 	diff = f_str->width - len;
-	out = (char *)ft_memalloc(sizeof(*out) * len + 100); //REMOVE +100
+	out = (char *)ft_memalloc(sizeof(*out) * f_str->width);
 	if (out == NULL)
 		exit (-1);
 	ft_memset(out, ' ', f_str->width);
@@ -271,22 +285,180 @@ void print_di(t_fs *f_str, long long ll)
 	}
 	if (!(f_str->flags & MINUS) && (f_str->flags & ZERO))
 		ft_memset(out, '0', f_str->width);
-	out = not_itoa(out, ll, len, diff); //Make a function to decide which type of number is parsed, d , o or x, malloc protection is in handle_width
+	out = not_itoa(out, ull, len, diff); //Make a function to decide which type of number is parsed, d , o or x, malloc protection is in handle_width
 	set_prefix(f_str, out, ll, diff);
 	write(1, out, f_str->width);
 	++f_str->str;
 	free(out);
 }	
 
+unsigned long long powers_of_ten(int len)
+{
+	unsigned long long res;
+
+	res = 1;
+	while (--len)
+		res *= 10;
+	return (res);
+}
+
+void print_zeroes(int len)
+{
+	while (len > 0)
+	{
+		ft_putnbr(0);
+		--len;
+	}
+}
+
+void print_spaces(int len)
+{
+	while (len > 0)
+	{
+		ft_putchar(' ');
+		--len;
+	}
+}
+
+/*Argument type is uint because that was the one which gave correct results on my linux*/
+unsigned int octal_len(unsigned long long ull)
+{
+	char s[100];
+	int i;
+
+	i = 0;
+	ft_bzero(s, 100);
+	if (ull == 0)
+		return (1);
+	while(ull > 0)
+	{
+		s[i] = (ull % 8) + '0';
+		ull /= 8;
+		++i;
+	}
+	return (ft_strlen(s));
+}
+
+void str_reverse(char *s)
+{
+	int len;
+	int i;
+	char temp[100];
+
+	bzero(temp, 100);
+	len = ft_strlen(s) - 1;
+	i = 0;
+	while (len >= 0)
+	{
+		temp[i] = s[len];
+		++i;
+		--len;
+	}
+	ft_putstr(temp);
+}
+
+unsigned int octal_print(unsigned long long ull)
+{
+	char s[100];
+	int i;
+
+	if (ull == 0)
+	{
+		ft_putnbr(0);
+		return (0);
+	}
+	i = 0;
+	ft_bzero(s, 100);
+	while(ull > 0)
+	{
+		s[i] = (ull % 8) + '0';
+		ull /= 8;
+		++i;
+	}
+	str_reverse(s);
+	return (ft_strlen(s));
+}
+
+void right_adjusted_octal(t_fs *fs, unsigned long long ull, int len)
+{
+	if (fs->precision > 0)
+	{
+		print_spaces(fs->width - fs->precision - len);
+		print_zeroes(fs->precision - len);
+	}
+	else if (!fs->is_precision)
+	{			
+		if (!(fs->flags & ZERO))
+			print_spaces(fs->width - fs->precision - len);
+		if (fs->flags & HASH)
+			print_zeroes(1);
+		if (fs->flags & ZERO)
+			print_zeroes(fs->width - len);
+	}
+	else if (fs->is_precision)
+	{		
+		print_spaces(fs->width - fs->precision - len);
+		if (fs->flags & HASH && ++len)
+			print_zeroes(1);
+	}
+	if (ull > 0 || (ull == 0 && !fs->is_precision && !(fs->flags & HASH)))
+		octal_print(ull);
+}
+/* Number of zeroes = precision - number length. If number is nonzero.
+ * If precision is not given and zero flag is on. Number of zeroes = width - number length
+ */
+void print_octal(t_fs *f_str, unsigned long long ull)
+{
+	int len;
+	int width;
+	int precision;
+
+	width = f_str->width;
+	precision = f_str->precision;
+	//Always print zero except when precision is 0 and there is no hash.
+	/* Create number, calculate width > precision > number length, choose largest */
+	len = octal_len(ull);
+	handle_width(f_str, len);
+	if (!(f_str->flags & MINUS))
+		right_adjusted_octal(f_str, ull, len);
+	else
+	{
+		/* With # prefix with zero, test with zero and 0 precision. */
+		if (f_str->flags & HASH || (ull == 0 && !f_str->is_precision))
+			print_zeroes(1);
+		if (ull > 0)
+			octal_print(ull);
+		print_spaces(f_str->width - len);
+	}
+	++f_str->str;
+}
 /* Every conversion has a width for the whole, length for just the digits and offset for where to print it the field */
 void function_dispatcher(t_fs *f_str, long long ll)
 {
 			//call either absolute_itoa, otoa, or xtoa, or the unsigned one
-	if(*f_str->str == 'd' || *f_str->str == 'i')	
+	if(*f_str->str == 'd' || *f_str->str == 'i' || *f_str->str == 'u')	
 		print_di(f_str, ll);
+	if (*f_str->str == 'o')
+		print_octal(f_str, ll);
 }
 
-long long cast_to_modified(t_fs *f_str, long long ll)
+unsigned long long cast_to_modifier_u(t_fs *f_str, unsigned long long ll)
+{
+	int m;
+
+	m = f_str->modifier;
+	if (m & LLONG)
+		return((unsigned long long)ll);//print_di(f_str, (long long)ll);
+	else if (m & LONG)
+		return((unsigned long)ll);//print_di(f_str, (long)ll);
+	else if (m & SHORT)
+		return((unsigned short)ll);//print_di(f_str, (short)ll);
+	else if (m & CHAR)
+		return((unsigned char)ll);//print_di(f_str, (char)ll);
+	return((unsigned int)ll);//print_di(f_str, (int)ll);
+}
+
+long long cast_to_modifier(t_fs *f_str, long long ll)
 {
 	int m;
 
@@ -301,8 +473,7 @@ long long cast_to_modified(t_fs *f_str, long long ll)
 		return((short)ll);//print_di(f_str, (short)ll);
 	else if (m & CHAR)
 		return((char)ll);//print_di(f_str, (char)ll);
-	else
-		return((int)ll);//print_di(f_str, (int)ll);
+	return((int)ll);//print_di(f_str, (int)ll);
 }
 	
 /* Never format string or argcs */
@@ -311,28 +482,57 @@ void format_fs(t_fs *f_str)
 	f_str->return_n = 0;
 	f_str->flags = 0;
 	f_str->width = 0;
-	f_str->precision = -1;
+	f_str->precision = 0;
+	f_str->is_precision = 0;
 	f_str->modifier = 0;
 	f_str->conversion = 0;
+	f_str->neg = 0;
+}
+
+unsigned long long get_argument_u(t_fs *f_str)
+{
+	int m;
+	unsigned long long arg;
+
+	m = f_str->modifier;
+	if (m & LDBL)
+		arg = va_arg(f_str->argcs, long double);//call get_ldbl, which gets the value How the original does it, is there SEGFAULT here?
+	else if (m & LLONG)
+		arg = va_arg(f_str->argcs, long long);
+	else if (m & LONG)
+		arg = va_arg(f_str->argcs, long);
+	else
+		arg = va_arg(f_str->argcs, int);
+	return (arg);
 }
 
 void parse_conversion(t_fs *f_str)
 {
 	long double			ld;
 	long long int		ll;
+	unsigned long long	ull;
 	//str should be pointing to conversion
 	//make a function which gets the argument from stack
 	//Conver the value to octal-, hexa-, integer- or float string
 	//One function to return long long and one to return long double
 	if (*f_str->str != 'f')
 	{
-		ll = get_argument(f_str);
-		ll = cast_to_modified(f_str, ll);
-		function_dispatcher(f_str, ll);
+		if (*f_str->str != 'd' && *f_str->str != 'i')
+		{
+			ull = get_argument_u(f_str);
+			ull = cast_to_modifier_u(f_str, ull);
+			function_dispatcher(f_str, ull);
+		}
+		else
+		{
+			ll = get_argument(f_str);
+			ll = cast_to_modifier(f_str, ll);
+			function_dispatcher(f_str, ll);
+		}
+
 	}
 	else
 		;
-//	*f_str = (t_fs){.precision = -1}; //Does this work? Google why? New struct is created?
 	format_fs(f_str);
 }
 
