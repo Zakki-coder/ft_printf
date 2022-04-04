@@ -3,25 +3,9 @@ Input   : helllo |%4 d|
 Expected: helllo |%4 d|
 Yours   : helllo |   0|
 test_d_and_i
-Input   : helllo |% .4d|
-Expected: helllo | 0003|
-Yours   : helllo |   3|
-test_d_and_i
 Input   : helllo |%.4 d|
 Expected: helllo |%.4 d|
-Yours   : helllo |   0|
-test_d_and_i
-Input   : helllo |% .4d|
-Expected: helllo | 0003|
-Yours   : helllo |   3|
-test_d_and_i
-Input   : helllo |%.40d|
-Expected: helllo |0000000000000000000000000000000000000000|
-Yours   : helllo |                                       0|
-test_d_and_i
-Input   : helllo |%.40d|
-Expected: helllo |0000000000000000000000000000000000000000|
-Yours   : helllo |                                       0|
+Yours   : helllo | 0000|
 test_d_and_i
 Input   : helllo |%40-d|
 Expected: helllo |%40-d|
@@ -34,3 +18,11 @@ test_d_and_i
 Input   : helllo |%4- d|
 Expected: helllo |%4- d|
 Yours   : helllo | 0  |
+test_unsigned_conversion_with_random_stuff
+Input   : Argument is 42: |%-.14llu|
+Expected: Argument is 42: |00000000000042|
+Yours   : Argument is 42: |42            |
+test_unsigned_conversion_with_random_stuff
+Input   : Argument is 42: |%- 4u|
+Expected: Argument is 42: |42  |
+Yours   : Argument is 42: | 42 |

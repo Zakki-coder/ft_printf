@@ -11,7 +11,7 @@ SRC =	ft_printf_unit_test.c	\
 
 all:
 	@rm -f ./results/*
-	@gcc -o ${NAME} ${SRC} ${INC}
+	@gcc -g -o ${NAME} ${SRC} ${INC}
 
 clean:
 	@rm -f ${NAME}

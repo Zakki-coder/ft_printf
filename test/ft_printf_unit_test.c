@@ -963,7 +963,8 @@ void test_d_and_i(void)
 	inputs[i++] = "helllo |%0 +4d|\n";
 	inputs[i++] = "helllo |%0 +4d|\n";
 	inputs[i++] = "helllo |%0 +4d|\n";
-	inputs[i++] = "helllo |%0 4d|\n";
+	inputs[i++] = "Argument is -3 |%.4d|\n";
+	inputs[i++] = "Argument is zero |%.4d|\n";
 
    i = 0;
   printf(inputs[i++], 42, -42, 42); 
@@ -1022,6 +1023,7 @@ void test_d_and_i(void)
 	printf(inputs[i++],	 0);
 	printf(inputs[i++],	 3);
 	printf(inputs[i++],   	-3);
+	printf(inputs[i++],		0);
 
   fflush(stdout);
   close(p[1]);
@@ -1086,6 +1088,7 @@ void test_d_and_i(void)
 	ft_printf(inputs[i++], 0);
 	ft_printf(inputs[i++], 3);
 	ft_printf(inputs[i++], -3);
+	ft_printf(inputs[i++], 0);
 
 	fflush(stdout);
 	close(p2[1]);
@@ -1610,7 +1613,7 @@ int main(int argc, char *args) {
 //	test_length_mod_l_and_L_with_float();
 //	test_print_with_percent(0);
 //	test_some_edges();
-	test_d_and_i();
+//	test_d_and_i();
 //	test_unsigned_conversion_with_char();
 //	test_unsigned_conversion_with_short();
 //	test_unsigned_conversion_with_int();
