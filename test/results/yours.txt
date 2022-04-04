@@ -1,4 +1,0 @@
-Argument is ZERO: |00000|
-Argument is 42: |42            |
-Argument is 42: | 42 |
-Argument is -42: |42   |

@@ -135,13 +135,16 @@ void how_convers()
 
 void test_d_i()
 {
-	printf("Why? |%.40d|\n", 5);
-	ft_printf("Why? |%.40d|\n", 5);
+	printf("Input 3 |%0.4d|\n", 3);
+	ft_printf("Input 3 |%0.4d|\n", 3);
 }
 
 void test_x()
 {
-	printf("%#o\n", 10);
+	int res1, res2;
+	int input = 0;
+	res1 = printf("|%-#5.3x|\n", input);
+//	res2 = hexa_len(input);	
 }
 
 void wtf(void)
@@ -169,12 +172,10 @@ void wtf(void)
 
 void test_octal_len()
 {
-	int ret;
-	unsigned long o_ret;
-	unsigned long test_nb = LLONG_MIN;
-	
-		printf("%llo\n", test_nb);
-		printf("\n");
+	int input = 12;
+
+	printf("|%-#5.3o|\n", input);
+	ft_printf("|%-#5.3o|\n", input);
 }
 
 void test_print_octal()
@@ -196,10 +197,10 @@ int main(void)
 //	test_get_precision();
 //	test_get_modifiers();	
 //	how_convers();
-	test_d_i();
+//	test_d_i();
 //	test_x();
 //	wtf();
-//	test_octal_len();
+	test_octal_len();
 //	test_print_octal();
 	return (0);
 }

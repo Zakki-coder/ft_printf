@@ -6,7 +6,7 @@
 /*   By: jniemine <jniemine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 15:15:00 by jniemine          #+#    #+#             */
-/*   Updated: 2022/04/02 16:07:12 by jniemine         ###   ########.fr       */
+/*   Updated: 2022/04/04 18:23:28 by jniemine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_format_string
 }				t_fs;
 
 void	print_octal(t_fs *f_str, unsigned long long ull);
+unsigned int hexa_len(unsigned long long ull); //FOR DEBUG
 void	abs_putnbr(unsigned long long n);		//FOR DEBUG
 unsigned long long	convert_to_octal(unsigned long long ull); //FOR DEBUG
 char	*absolute_itoa(long long ll, int *n); //FOR DEBUG

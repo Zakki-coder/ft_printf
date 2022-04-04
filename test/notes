@@ -1,0 +1,8 @@
+	/* For x produce output with lowercase, for X with UPPERCASE */
+	/* precision is the minimum numbers of digits to appear, test with zero padd */
+	/* # flag prefixes with 0x or 0X, for NONZERO!!!! */
+	/* 0 flag padds with zeroes on the left */
+	/* - flag left adjustes and overrides 0 flag */
+	/* NO SPACE OR + FLAG */
+
+

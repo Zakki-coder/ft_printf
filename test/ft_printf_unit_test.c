@@ -1521,6 +1521,12 @@ void test_octal()
 	inputs[i++] = "Argument is ULLONG_MAX: |%4llo|, |%0-llo|, |%20.25llo|, |% llo|, |%+llo|, |%+ llo|\n";
 	inputs[i++] = "Argument is LLONG_MIN: |%4llo|, |%0-llo|, |%20.25llo|, |% llo|, |%+llo|, |%+ llo|\n";
 	inputs[i++] = "Argument is 3: |%4.o|\n"; 
+	inputs[i++] = "Argument is 3: |%#6.7o|\n";
+	inputs[i++] = "Argument is 0: |%#6.7o|\n";
+	inputs[i++] = "Argument is 0: |%-.7o|\n";
+	inputs[i++] = "Argument is 0: |%-#5.3o|\n";
+	inputs[i++] = "Argument is 12: |%-#5.3o|\n";
+	
 	i = 0;
 	printf(inputs[i++], 0, 0, 0, 0, 0, 0); 
 	printf(inputs[i++], 0, 0, 0, 0, 0, 0); 
@@ -1530,6 +1536,11 @@ void test_octal()
 	printf(inputs[i++], ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX); 
 	printf(inputs[i++], LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN); 
 	printf(inputs[i++], 3); 
+	printf(inputs[i++], 3); 
+	printf(inputs[i++], 0); 
+	printf(inputs[i++], 0); 
+	printf(inputs[i++], 0); 
+	printf(inputs[i++], 12); 
 	fflush(stdout);
 	fflush(stdout);
 	close(p[1]);
@@ -1537,6 +1548,57 @@ void test_octal()
 		exit(-1);
 	dup2(p2[1], fileno(stdout)); 
 
+i = 0;
+	ft_printf(inputs[i++], 0, 0, 0, 0, 0, 0); 
+	ft_printf(inputs[i++], 0, 0, 0, 0, 0, 0); 
+	ft_printf(inputs[i++], 0, 0, 0, 0, 0, 0); 
+	ft_printf(inputs[i++], UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX); 
+	ft_printf(inputs[i++], ULONG_MAX, ULONG_MAX, ULONG_MAX, ULONG_MAX, ULONG_MAX, ULONG_MAX); 
+	ft_printf(inputs[i++], ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX); 
+	ft_printf(inputs[i++], LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN); 
+	ft_printf(inputs[i++], 3); 
+	ft_printf(inputs[i++], 3); 
+	ft_printf(inputs[i++], 0); 
+	ft_printf(inputs[i++], 0); 
+	ft_printf(inputs[i++], 0); 
+	ft_printf(inputs[i++], 12); 
+	
+
+	fflush(stdout);
+	close(p2[1]);
+	dup2(stdout_bk, fileno(stdout));
+	read(p[0], res, buf_size);
+	read(p2[0], res2, buf_size);
+	if (strcmp(res, res2) != 0)
+	{
+		dump_it(inputs, res, res2, test_name);
+		printf("%-20s: FAIL\n", test_name);
+		fflush(stdout);
+		return ;
+	}
+	close (p[0]);
+	close (p2[0]);
+	printf("%-20s: OK\n", test_name);
+	fflush(stdout);
+	return ;
+}
+
+void test_hexa()
+{	
+	char *test_name = "test_hexa";
+	int buf_size = 2000;
+	char res[buf_size];
+	char res2[buf_size];
+	char *inputs[100];
+	int i = 0;
+	int p[2], p2[2], stdout_bk;
+
+	bzero(res, buf_size);
+	bzero(res2, buf_size);
+	if (pipe(p) < 0)
+		exit(-1);
+	stdout_bk = dup(fileno(stdout));
+	dup2(p[1], fileno(stdout)); 
 	i = 0;
 	inputs[i++] = "Argument is ZERO: |%.o|, |%#.o|, |%#-.o|, |%0.o|, |%-.o|, |%#0.o|\n";
 	inputs[i++] = "Argument is ZERO: |%o|, |%#o|, |%#-o|, |%0o|, |%-o|, |%#0o|\n";
@@ -1546,7 +1608,31 @@ void test_octal()
 	inputs[i++] = "Argument is ULLONG_MAX: |%4llo|, |%0-llo|, |%20.25llo|, |% llo|, |%+llo|, |%+ llo|\n";
 	inputs[i++] = "Argument is LLONG_MIN: |%4llo|, |%0-llo|, |%20.25llo|, |% llo|, |%+llo|, |%+ llo|\n";
 	inputs[i++] = "Argument is 3: |%4.o|\n"; 
+	inputs[i++] = "Argument is 3: |%#6.7X|\n";
+	inputs[i++] = "Argument is 0: |%#6.7X|\n";
+	inputs[i++] = "Argument is 0: |%-.7x|\n";
+	inputs[i++] = "Argument is 0: |%-#5.3x|\n";
 	i = 0;
+	printf(inputs[i++], 0, 0, 0, 0, 0, 0); 
+	printf(inputs[i++], 0, 0, 0, 0, 0, 0); 
+	printf(inputs[i++], 0, 0, 0, 0, 0, 0); 
+	printf(inputs[i++], UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX); 
+	printf(inputs[i++], ULONG_MAX, ULONG_MAX, ULONG_MAX, ULONG_MAX, ULONG_MAX, ULONG_MAX); 
+	printf(inputs[i++], ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX); 
+	printf(inputs[i++], LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN); 
+	printf(inputs[i++], 3); 
+	printf(inputs[i++], 3); 
+	printf(inputs[i++], 0); 
+	printf(inputs[i++], 0); 
+	printf(inputs[i++], 0); 
+	fflush(stdout);
+	fflush(stdout);
+	close(p[1]);
+	if (pipe(p2) < 0)
+		exit(-1);
+	dup2(p2[1], fileno(stdout)); 
+
+i = 0;
 	ft_printf(inputs[i++], 0, 0, 0, 0, 0, 0); 
 	ft_printf(inputs[i++], 0, 0, 0, 0, 0, 0); 
 	ft_printf(inputs[i++], 0, 0, 0, 0, 0, 0); 
@@ -1555,6 +1641,10 @@ void test_octal()
 	ft_printf(inputs[i++], ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX, ULLONG_MAX); 
 	ft_printf(inputs[i++], LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN, LLONG_MIN); 
 	ft_printf(inputs[i++], 3); 
+	ft_printf(inputs[i++], 3); 
+	ft_printf(inputs[i++], 0); 
+	ft_printf(inputs[i++], 0); 
+	ft_printf(inputs[i++], 0); 
 
 	fflush(stdout);
 	close(p2[1]);
@@ -1620,7 +1710,8 @@ int main(int argc, char *args) {
 //	test_unsigned_conversion_with_long();
 //	test_unsigned_conversion_with_long_long();
 //	test_unsigned_conversion_with_random_stuff();
-//	test_octal();
+	test_octal();
+//	test_hexa();
 
 //	test_overflow();
 	return (0);
