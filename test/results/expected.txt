@@ -1,0 +1,12 @@
+Argument is ZERO: ||, ||, ||, ||, ||, ||
+Argument is ZERO: |0|, |0|, |0|, |0|, |0|, |0|
+Argument is ZERO: |   0|, |   0|, |0   |, |0000|, |0   |, |0000|
+Argument is UINT_MAX: |ffffffff|, |ffffffff|, |00000000000000000ffffffff|, |ffffffff|, |ffffffff|, |ffffffff|
+Argument is ULONG_MAX: |ffffffffffffffff|, |ffffffffffffffff|, |000000000ffffffffffffffff|, |ffffffffffffffff|, |ffffffffffffffff|, |ffffffffffffffff|
+Argument is ULLONG_MAX: |ffffffffffffffff|, |ffffffffffffffff|, |000000000ffffffffffffffff|, |ffffffffffffffff|, |ffffffffffffffff|, |ffffffffffffffff|
+Argument is LLONG_MIN: |8000000000000000|, |8000000000000000|, |0000000008000000000000000|, |8000000000000000|, |8000000000000000|, |8000000000000000|
+Argument is 3: |   3|
+Argument is 3: |0X0000003|
+Argument is 0: |0000000|
+Argument is 0: |0000000|
+Argument is 0: |000  |

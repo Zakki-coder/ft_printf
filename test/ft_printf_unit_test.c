@@ -1600,14 +1600,14 @@ void test_hexa()
 	stdout_bk = dup(fileno(stdout));
 	dup2(p[1], fileno(stdout)); 
 	i = 0;
-	inputs[i++] = "Argument is ZERO: |%.o|, |%#.o|, |%#-.o|, |%0.o|, |%-.o|, |%#0.o|\n";
-	inputs[i++] = "Argument is ZERO: |%o|, |%#o|, |%#-o|, |%0o|, |%-o|, |%#0o|\n";
-	inputs[i++] = "Argument is ZERO: |%4o|, |%#4o|, |%#-4o|, |%04o|, |%-4o|, |%#04o|\n";
-	inputs[i++] = "Argument is UINT_MAX: |%4o|, |%0-o|, |%20.25o|, |% o|, |%+o|, |%+ o|\n";
-	inputs[i++] = "Argument is ULONG_MAX: |%4lo|, |%0-lo|, |%20.25lo|, |% lo|, |%+lo|, |%+ lo|\n";
-	inputs[i++] = "Argument is ULLONG_MAX: |%4llo|, |%0-llo|, |%20.25llo|, |% llo|, |%+llo|, |%+ llo|\n";
-	inputs[i++] = "Argument is LLONG_MIN: |%4llo|, |%0-llo|, |%20.25llo|, |% llo|, |%+llo|, |%+ llo|\n";
-	inputs[i++] = "Argument is 3: |%4.o|\n"; 
+	inputs[i++] = "Argument is ZERO: |%.x|, |%#.x|, |%#-.x|, |%0.x|, |%-.x|, |%#0.x|\n";
+	inputs[i++] = "Argument is ZERO: |%x|, |%#x|, |%#-x|, |%0x|, |%-x|, |%#0x|\n";
+	inputs[i++] = "Argument is ZERO: |%4x|, |%#4x|, |%#-4x|, |%04x|, |%-4x|, |%#04x|\n";
+	inputs[i++] = "Argument is UINT_MAX: |%4x|, |%0-x|, |%20.25x|, |% x|, |%+x|, |%+ x|\n";
+	inputs[i++] = "Argument is ULONG_MAX: |%4lx|, |%0-lx|, |%20.25lx|, |% lx|, |%+lx|, |%+ lx|\n";
+	inputs[i++] = "Argument is ULLONG_MAX: |%4llx|, |%0-llx|, |%20.25llx|, |% llx|, |%+llx|, |%+ llx|\n";
+	inputs[i++] = "Argument is LLONG_MIN: |%4llx|, |%0-llx|, |%20.25llx|, |% llx|, |%+llx|, |%+ llx|\n";
+	inputs[i++] = "Argument is 3: |%4.x|\n"; 
 	inputs[i++] = "Argument is 3: |%#6.7X|\n";
 	inputs[i++] = "Argument is 0: |%#6.7X|\n";
 	inputs[i++] = "Argument is 0: |%-.7x|\n";
@@ -1710,8 +1710,8 @@ int main(int argc, char *args) {
 //	test_unsigned_conversion_with_long();
 //	test_unsigned_conversion_with_long_long();
 //	test_unsigned_conversion_with_random_stuff();
-	test_octal();
-//	test_hexa();
+//	test_octal();
+	test_hexa();
 
 //	test_overflow();
 	return (0);

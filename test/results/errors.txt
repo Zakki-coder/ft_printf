@@ -1,0 +1,8 @@
+test_hexa
+Input   : Argument is 0: |%-.7x|
+Expected: Argument is 0: |0000000|
+Yours   : Argument is 0: |0      |
+test_hexa
+Input   : Argument is 0: |%-#5.3x|
+Expected: Argument is 0: |000  |
+Yours   : Argument is 0: |0    |
